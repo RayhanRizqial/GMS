@@ -1,0 +1,66 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Dashboard{% endblock %} {% block
+page_title %}Dashboard{% endblock %} {% block content %}
+<div class="visualFAQ">
+  <div
+    class="judulFAQ"
+    style="background-image: url('{{ url_for('static', path='images/BGFaq.png') }}');"
+  >
+    <h1>Frequently Asked Questions</h1>
+    <p>Pertanyaan yang sering ditanyakan oleh user dalam kurun waktu 3 jam</p>
+  </div>
+  <div
+    class="isiFAQ"
+    style="background-image: url('{{ url_for('static', path='images/BGIsiFAQ.png') }}');"
+  >
+    <button class="faq-toggle">
+      Apa tujuan dari aplikasi ini? <i class="fas fa-plus"></i>
+    </button>
+    <div class="faq-content">
+      <p>
+        Aplikasi ini dirancang untuk meningkatkan motivasi belajar mahasiswa
+        dengan menggunakan metode pembelajaran interaktif.
+      </p>
+    </div>
+
+    <button class="faq-toggle">
+      Bagaimana cara kerja agen pedagogis? <i class="fas fa-plus"></i>
+    </button>
+    <div class="faq-content">
+      <p>
+        Agen pedagogis memberikan panduan yang dipersonalisasi berdasarkan
+        interaksi dan kesalahan pengguna sebelumnya.
+      </p>
+    </div>
+
+    <button class="faq-toggle">
+      Apa itu scaffolding dalam konteks aplikasi ini?
+      <i class="fas fa-plus"></i>
+    </button>
+    <div class="faq-content">
+      <p>
+        Scaffolding adalah teknik pembelajaran di mana dukungan bertahap
+        diberikan kepada siswa sampai mereka dapat belajar secara mandiri.
+      </p>
+    </div>
+
+    <button class="faq-toggle">
+      Apakah aplikasi ini dapat digunakan oleh semua kalangan?
+      <i class="fas fa-plus"></i>
+    </button>
+    <div class="faq-content">
+      <p>
+        Iya, aplikasi ini dirancang untuk digunakan oleh mahasiswa, tetapi dapat
+        juga digunakan oleh semua kalangan yang ingin belajar CSS.
+      </p>
+    </div>
+
+    <button class="faq-toggle">
+      Apakah aplikasi ini gratis? <i class="fas fa-plus"></i>
+    </button>
+    <div class="faq-content">
+      <p>Ya, aplikasi ini dapat diakses secara gratis untuk semua pengguna.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,696 @@
+<!-- templates/dashboard.html -->
+
+
+{% extends 'base.html' %} {% block title %}Fine Tuning{% endblock %} {% block
+    page_title %}Fine Tuning{% endblock %} {% block content %}
+    
+    <style>
+        .infoManagement--container {
+            width: 100%;
+            height: 100%;
+            background-color: #EDE5C8;
+        }
+    
+        .infoManagement--leftSide {
+            display: flex;
+            flex-direction: column;
+            width: 32rem;
+            height: 44rem;
+            background-color: #FEF5DA;
+            margin: 1rem;
+            padding: 40px;
+            gap: 1rem;
+            border-radius: 24px;
+        }
+    
+        .infoManagement--rightSide {
+            display: flex;
+            flex-direction: column;
+            width: 32rem;
+            height: 44rem;
+            background-color: #FEF5DA;
+            margin: 1rem;
+            padding: 40px;
+            transition: background-color 0.3s ease;
+            gap: 1rem;
+            border-radius: 24px;
+        }
+    
+        .infoManagement--form {
+            display: flex;
+            gap: 1rem;
+        }
+    
+        .infoManagement--form label,
+        .infoManagement--form textarea,
+        .infoManagement--form input {
+            margin-bottom: 0;
+        }
+    
+        .disabled {
+            /* background-color: rgb(110, 96, 71) ; */
+            opacity: 66%;
+            pointer-events: none;
+            cursor: not-allowed;
+            /* Mencegah interaksi pengguna */
+            /* Warna gelap ketika disabled */
+        }
+    
+        /* Sembunyikan radio button asli */
+        input[type="radio"] {
+            display: none;
+        }
+    
+        /* Styling untuk tombol sebagai pengganti radio */
+        .radio-button-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #EB5757;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+            color: white;
+        }
+    
+        /* Warna tombol saat radio button aktif */
+        input[type="radio"]:checked+.radio-button-label {
+            background-color: #a13939;
+        }
+    
+        /* Warna tombol saat hover */
+        .radio-button-label:hover {
+            background-color: #bd4343;
+        }
+    
+        .file-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            /* Jarak antara tombol file dan info file */
+        }
+    
+        .file-upload-container label {
+            font-size: 1rem;
+        }
+    
+        .custom-file-upload {
+            width: 8rem;
+            height: 3rem;
+            border-radius: 10px;
+            border: none;
+            background-color: #EB5757;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+    
+        .custom-file-upload:hover {
+            background-color: #e04a4a;
+            /* Warna saat hover */
+        }
+    
+        #file-info {
+            font-size: 1rem;
+            color: #333;
+            /* Warna teks info file */
+        }
+    
+        .add-dataset-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+    
+        .add-dataset-button {
+            width: 10rem;
+            height: 3rem;
+            border-radius: 10px;
+            border: none;
+            background-color: #EB5757;
+            /* Warna background saat aktif */
+            color: white;
+            cursor: pointer;
+            /* transform: translateX(9rem); */
+            transition: background-color 0.3s ease;
+            /* Transisi warna background */
+        }
+    
+        .add-dataset-button-recently {
+            width: auto;
+            height: 3rem;
+            border-radius: 10px;
+            border: none;
+            background-color: #E0A26F;
+            /* Warna background saat aktif */
+            color: white;
+            cursor: pointer;
+            /* transform: translateX(9rem); */
+            transition: background-color 0.3s ease;
+            /* Transisi warna background */
+        }
+    
+    
+    
+        /* Styling saat tombol dalam keadaan hover */
+        .add-dataset-button:hover {
+            background-color: #e04a4a;
+            /* Warna saat hover */
+        }
+    
+        /* Styling saat tombol dinonaktifkan */
+        .add-dataset-button:disabled,
+        .add-dataset-button.disabled {
+            /* background-color: #987676; */
+    
+            /* Warna background saat dinonaktifkan */
+            color: #a0a0a0;
+            /* Warna teks saat dinonaktifkan */
+            cursor: not-allowed;
+        }
+    
+        .dataset-wrapper {
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            background-color: #FEF5DA;
+            /* display: flex; */
+            /* Mengaktifkan Flexbox */
+            justify-content: space-between;
+            /* Memastikan konten berada di kedua sisi */
+            align-items: center;
+            /* Menyelaraskan elemen secara vertikal */
+        }
+    
+        .dataset-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+    
+        }
+    
+        .delete-button {
+            margin-left: 14rem;
+            background-color: #d9534f;
+            /* Warna merah untuk tombol hapus */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.3s ease;
+        }
+    
+        .delete-button:hover {
+            background-color: #c9302c;
+            /* Warna merah lebih gelap saat hover */
+        }
+    
+    
+        .dataset-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    
+        .dataset-content h4 {
+            margin-top: 0;
+        }
+    
+        .dataset-content textarea {
+            width: auto;
+            border-radius: 15px;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+    
+        .card-container {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* Ensure it sits on top of other elements */
+        }
+    
+        .card {
+            background: #FEF5DA;
+            padding: 20px;
+            border-radius: 10px;
+            width: 450px;
+            height: 600px;
+        }
+    
+        .card-title {
+            margin-bottom: 20px;
+        }
+    
+        .card-dropdown {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 8px;
+        }
+    
+        .card-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+    
+        .card-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        .card-cancel {
+            background: #EB5757;
+            /* Red */
+            color: white;
+        }
+    
+        .card-submit {
+            background: #577D8A;
+            /* Green */
+            color: white;
+        }
+    </style>
+    </head>
+    <!-- ini yang info-management -->
+    <body onload=initPage()>
+        <div class="infoManagement--container">
+            <form class="infoManagement--form" action="/submit-infoManagement" method="post" enctype="multipart/form-data">
+                <div class="infoManagement--leftSide">
+                    <!-- Suffix -->
+                    <label for="namaSuffix"><strong>Topik:</strong></label>
+                    <textarea id="namaSuffix" name="namaSuffix" rows="3"
+                        style="width: 434px; height: 52px; border-radius: 15px;"></textarea>
+    
+                    <!-- Deskripsi -->
+                    <label for="deskripsi"><strong>Deskripsi:</strong></label>
+                    <textarea id="deskripsi" name="deskripsi" rows="3"
+                        style="width: 434px; height: 118px; border-radius: 15px;"></textarea>
+    
+                    <!-- Dataset (radio buttons) -->
+                    <div>
+                        <label><strong>Dataset:</strong></label>
+                        <br>
+                        <!-- Radio button for "File" -->
+                        <input type="radio" id="file" name="dataset" value="File" onclick="toggleInputs()" checked>
+                        <label for="file" class="radio-button-label">File</label>
+    
+                        <!-- Radio button for "Input Dialog" -->
+                        <input type="radio" id="inputDialog" name="dataset" value="InputDialog" onclick="toggleInputs()">
+                        <label for="inputDialog" class="radio-button-label">Input Dialog</label>
+    
+                    </div>
+    
+                    <!-- File JSONL -->
+                    <div class="file-upload-container">
+                        <label for="jsonlFile"><strong>File JSONL:</strong></label>
+                        <div>
+                            <label for="jsonlFile" class="custom-file-upload">Choose File</label>
+                            <input type="file" id="jsonlFile" name="jsonlFile" accept=".jsonl" style="display: none;">
+                            <span id="file-info">No file chosen</span>
+                        </div>
+                    </div>
+    
+                 
+    
+                    <!-- Button Group -->
+                    <div class="button-group" style="display:flex; gap:1rem; justify-content: end;">
+                        <button type="button" onclick="window.history.back()" style="    width: 8rem;
+                        height: 3rem;
+                        border-radius: 10px;
+                        border: none;
+                        background-color: #EB5757;
+                        color: white;"><strong>Batal</strong></button>
+                        <button type="submit" style="    width: 8rem;
+                        height: 3rem;
+                        border-radius: 10px;
+                        border: none;
+                        background-color: #577D8A;
+                        color: white;"><strong>Mulai</strong></button>
+                    </div>
+                </div>
+    
+                <div class="infoManagement--rightSide" id="rightSide">
+                   
+    
+                    <!-- Tombol Tambah Dataset -->
+                    <div class="add-dataset-container">
+                        <button type="button" class="add-dataset-button" onclick="addDataset()" id="addDatasetButton">Tambah
+                            Dataset</button>
+                        <button type="button" class="add-dataset-button-recently" onclick="chooseModel()"
+                            id="addDatasetButton">Tambah Dataset yang Pernah dibuat</button>
+                    </div>
+    
+    
+                    <div style="max-height: 30rem; overflow-y: auto;">
+                        <!-- Tempat untuk menambahkan dataset -->
+                        <div id="dataset-container" style="display: flex; flex-direction:column"></div>
+    
+                    </div>
+                </div>
+                <!-- Card Container -->
+                <div id="cardContainer" class="card-container">
+                    <div class="card">
+                        <h5 class="card-title"><b>Pilih Dataset yang Pernah Dibuat</b></h5>
+                        <label class="mb-2" for=""><b>Data</b></label>
+                        <select id="datasetDropdown" class="card-dropdown">
+                            <!-- Options will be dynamically added here -->
+                        </select>
+                        <div class="card-buttons">
+                            <button type="button" class="card-button card-cancel" onclick="closeCard()">Batal</button>
+                            <button type="button" class="card-button card-submit" onclick="submitSelection()">Pilih</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    
+        <script>
+    
+            let datasetCount = 0; // Untuk menghitung jumlah dataset yang sudah ditambahkan
+    
+            function addDataset() {
+                datasetCount++; // Increment counter setiap kali tombol ditekan
+    
+                // Membuat div container untuk dataset
+                const datasetWrapper = document.createElement('div');
+                datasetWrapper.className = 'dataset-wrapper';
+    
+                // Membuat div untuk header dataset
+                const datasetHeader = document.createElement('div');
+                datasetHeader.className = 'dataset-header';
+    
+                // Membuat judul Dataset
+                const datasetTitle = document.createElement('h6');
+                datasetTitle.textContent = 'Dataset ' + datasetCount;
+    
+                // Membuat tombol Hapus
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Hapus';
+                deleteButton.className = 'delete-button';
+                deleteButton.addEventListener('click', function () {
+                    datasetWrapper.remove(); // Menghapus div dataset
+                });
+    
+                // Memasukkan elemen header ke dalam div dataset
+                datasetHeader.appendChild(datasetTitle);
+                datasetHeader.appendChild(deleteButton);
+    
+                // Membuat div untuk konten dataset
+                const datasetContent = document.createElement('div');
+                datasetContent.className = 'dataset-content';
+    
+                // Membuat textarea untuk User
+                const userLabel = document.createElement('label');
+                userLabel.textContent = 'User:';
+                const userTextarea = document.createElement('textarea');
+                userTextarea.name = `user_${datasetCount}`;
+                userTextarea.rows = 2;
+    
+                // Membuat textarea untuk Assistant
+                const assistantLabel = document.createElement('label');
+                assistantLabel.textContent = 'Assistant:';
+                const assistantTextarea = document.createElement('textarea');
+                assistantTextarea.name = `assistant_${datasetCount}`;
+                assistantTextarea.rows = 2;
+    
+                // Memasukkan elemen ke dalam div dataset content
+                datasetContent.appendChild(userLabel);
+                datasetContent.appendChild(userTextarea);
+                datasetContent.appendChild(assistantLabel);
+                datasetContent.appendChild(assistantTextarea);
+    
+                // Memasukkan elemen header dan content ke dalam div dataset wrapper
+                datasetWrapper.appendChild(datasetHeader);
+                datasetWrapper.appendChild(datasetContent);
+    
+                // Menambahkan datasetWrapper ke dalam container utama
+                document.getElementById('dataset-container').appendChild(datasetWrapper);
+            }
+    
+            function chooseModel() {
+                document.getElementById('cardContainer').style.display = 'flex';
+            }
+    
+            function closeCard() {
+                document.getElementById('cardContainer').style.display = 'none';
+            }
+    
+            function validateForm(event) {
+                event.preventDefault(); // Mencegah form dikirim secara default
+    
+                const isInputDialog = document.getElementById('inputDialog').checked;
+    
+                if (isInputDialog) {
+                    const systemInput = document.getElementById('system');
+                    const datasetContainer = document.getElementById('dataset-container');
+                    const datasets = datasetContainer.querySelectorAll('.dataset-wrapper');
+    
+                    let isValid = true;
+                    let errorMessage = '';
+    
+                    // Validasi System input
+                    if (!systemInput.value.trim()) {
+                        isValid = false;
+                        errorMessage += 'Kolom System wajib diisi.\n';
+                    }
+    
+                    // Validasi dataset (minimal satu dataset harus diisi)
+                    if (datasets.length === 0) {
+                        isValid = false;
+                        errorMessage += 'Minimal satu dataset (User dan Assistant) harus diisi.\n';
+                    } else {
+                        datasets.forEach((dataset, index) => {
+                            const userInput = dataset.querySelector('textarea[name^="user_"]');
+                            const assistantInput = dataset.querySelector('textarea[name^="assistant_"]');
+    
+                            if (!userInput.value.trim() || !assistantInput.value.trim()) {
+                                isValid = false;
+                                errorMessage += `Dataset ${index + 1}: User dan Assistant wajib diisi.\n`;
+                            }
+                        });
+                    }
+    
+                    if (!isValid) {
+                        alert(errorMessage);
+                        return;
+                    }
+                }
+    
+                // Jika semua validasi berhasil, kirim form
+                event.target.submit();
+            }
+    
+            // Tambahkan event listener untuk form submission
+            document.querySelector('.infoManagement--form').addEventListener('submit', validateForm);
+    
+            // Perbarui fungsi toggleInputs untuk menangani disabling/enabling input
+            function toggleInputs() {
+                const isFileSelected = document.getElementById('file').checked;
+                const systemTextarea = document.getElementById('system');
+                const rightSide = document.getElementById('rightSide');
+                const fileInput = document.getElementById('jsonlFile');
+                const tambahDatasetButton = document.getElementById('addDatasetButton');
+                const datasetGroups = document.querySelectorAll('.dataset-group');
+    
+                if (isFileSelected) {
+                    systemTextarea.disabled = true;
+                    systemTextarea.required = false;
+                    rightSide.classList.add('disabled');
+                    fileInput.disabled = false;
+                    fileInput.required = true;
+                    fileInput.classList.remove('disabled');
+                    tambahDatasetButton.disabled = true;
+                    tambahDatasetButton.classList.add('disabled');
+    
+                    datasetGroups.forEach(group => {
+                        group.querySelectorAll('textarea').forEach(textarea => {
+                            textarea.disabled = true;
+                            textarea.required = false;
+                            textarea.classList.add('disabled');
+                        });
+                    });
+                } else {
+                    systemTextarea.disabled = false;
+                    systemTextarea.required = true;
+                    rightSide.classList.remove('disabled');
+                    fileInput.disabled = true;
+                    fileInput.required = false;
+                    fileInput.classList.add('disabled');
+                    tambahDatasetButton.disabled = false;
+                    tambahDatasetButton.classList.remove('disabled');
+                    fetchDatasets()
+                    datasetGroups.forEach(group => {
+                        group.querySelectorAll('textarea').forEach(textarea => {
+                            textarea.disabled = false;
+                            textarea.required = true;
+                            textarea.classList.remove('disabled');
+                        });
+                    });
+                }
+            }
+    
+            // Panggil toggleInputs saat radio button berubah
+            document.querySelectorAll('input[name="dataset"]').forEach(radio => {
+                radio.addEventListener('change', toggleInputs);
+            });
+    
+            // Panggil toggleInputs saat halaman dimuat
+            document.addEventListener('DOMContentLoaded', toggleInputs);
+    
+            document.getElementById('jsonlFile').addEventListener('change', function () {
+                const fileInput = document.getElementById('jsonlFile');
+                const fileInfo = document.getElementById('file-info');
+    
+                if (fileInput.files.length > 0) {
+                    fileInfo.textContent = fileInput.files[0].name; // Menampilkan nama file
+                } else {
+                    fileInfo.textContent = 'No file chosen'; // Tampilkan pesan default jika tidak ada file yang dipilih
+                }
+            });
+    
+            function initPage() {
+                // Panggil toggleInputs() saat halaman dimuat untuk mengatur state awal
+                toggleInputs();
+            }
+    
+            async function fetchDatasets() {
+                try {
+                    // -- Belum disesuain sesuai info Management --
+                    const response = await fetch("/fine-tuning/get");
+                    const datasets = await response.json();
+    
+                    const dropdown = document.getElementById('datasetDropdown');
+                    dropdown.innerHTML = '';  // Clear existing options
+    
+                    datasets.forEach(dataset => {
+                        const option = document.createElement('option');
+                        option.value = dataset.id;
+                        option.textContent = dataset.namaSuffix;
+                        dropdown.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching datasets:', error);
+                }
+            }
+    
+            async function submitSelection() {
+                const selectedValue = document.querySelector('.card-dropdown').value;
+                const datasetContainer = document.getElementById('dataset-container');
+    
+                try {
+                    const response = await fetch(`/api/dataset/${selectedValue}`);
+                    const data = await response.json();
+    
+                    displayDataset(data.dataset);
+                    closeCard();
+                } catch (error) {
+                    console.error('Error fetching dataset:', error);
+                }
+            }
+    
+            let lastDatasetNumber = 0;
+    
+            function displayDataset(dataset) {
+                const datasetContainer = document.getElementById('dataset-container');
+                datasetContainer.innerHTML = '';
+    
+                dataset.forEach((item, index) => {
+                    lastDatasetNumber++;
+                    const datasetWrapper = createDatasetElement(lastDatasetNumber, item[0], item[1]);
+                    datasetContainer.appendChild(datasetWrapper);
+                });
+            }
+    
+            function addDataset() {
+                lastDatasetNumber++;
+                const datasetWrapper = createDatasetElement(lastDatasetNumber, '', '');
+                document.getElementById('dataset-container').appendChild(datasetWrapper);
+            }
+    
+            function createDatasetElement(number, userContent, assistantContent) {
+                const datasetWrapper = document.createElement('div');
+                datasetWrapper.className = 'dataset-wrapper';
+    
+                const datasetHeader = document.createElement('div');
+                datasetHeader.className = 'dataset-header';
+    
+                const datasetTitle = document.createElement('h6');
+                datasetTitle.textContent = `Dataset ${number}`;
+    
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Hapus';
+                deleteButton.className = 'delete-button';
+                deleteButton.addEventListener('click', function () {
+                    datasetWrapper.remove();
+                    updateDatasetNumbers();
+                });
+    
+                datasetHeader.appendChild(datasetTitle);
+                datasetHeader.appendChild(deleteButton);
+    
+                const datasetContent = document.createElement('div');
+                datasetContent.className = 'dataset-content';
+    
+                const userLabel = document.createElement('label');
+                userLabel.textContent = 'User:';
+                const userTextarea = document.createElement('textarea');
+                userTextarea.name = `user_${number}`;
+                userTextarea.rows = 2;
+                userTextarea.value = userContent;
+    
+                const assistantLabel = document.createElement('label');
+                assistantLabel.textContent = 'Assistant:';
+                const assistantTextarea = document.createElement('textarea');
+                assistantTextarea.name = `assistant_${number}`;
+                assistantTextarea.rows = 2;
+                assistantTextarea.value = assistantContent;
+    
+                datasetContent.appendChild(userLabel);
+                datasetContent.appendChild(userTextarea);
+                datasetContent.appendChild(assistantLabel);
+                datasetContent.appendChild(assistantTextarea);
+    
+                datasetWrapper.appendChild(datasetHeader);
+                datasetWrapper.appendChild(datasetContent);
+    
+                return datasetWrapper;
+            }
+    
+            function updateDatasetNumbers() {
+                const datasetWrappers = document.querySelectorAll('.dataset-wrapper');
+                datasetWrappers.forEach((wrapper, index) => {
+                    const title = wrapper.querySelector('h6');
+                    title.textContent = `Dataset ${index + 1}`;
+    
+                    const userTextarea = wrapper.querySelector('textarea[name^="user_"]');
+                    const assistantTextarea = wrapper.querySelector('textarea[name^="assistant_"]');
+    
+                    userTextarea.name = `user_${index + 1}`;
+                    assistantTextarea.name = `assistant_${index + 1}`;
+                });
+                lastDatasetNumber = datasetWrappers.length;
+            }
+    
+        </script>
+    
+        {% endblock %}

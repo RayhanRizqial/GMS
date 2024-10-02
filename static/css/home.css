@@ -1,0 +1,57 @@
+/* File: static/css/style.css */
+
+/* Set margin and padding to zero for body */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif; /* Set your preferred font-family */
+}
+
+/* Style the container */
+.container {
+  max-width: 800px; /* Set the maximum width of the container */
+  margin: auto; /* Center the container */
+}
+
+/* Style the header with some spacing */
+.display-2 {
+  margin-bottom: 20px;
+}
+
+/* Center the audio player */
+#audioPlayer {
+  display: block;
+  margin: auto;
+}
+
+/* Style the row with some spacing */
+.row {
+  margin-top: 30px;
+}
+
+/* Add some padding and border to the audio player container */
+.col-md-6 {
+  padding: 15px;
+  border: 1px solid #ddd; /* Add a simple border */
+  border-radius: 8px; /* Add rounded corners */
+}
+
+/* Style the footer with some spacing */
+.footer {
+  margin-top: 50px;
+}
+
+/* Add responsive styles */
+@media screen and (max-width: 768px) {
+  .container {
+    max-width: 100%; /* Set full width for small screens */
+  }
+}
+
+img {
+  max-width: 100%; /* Membuat gambar responsif */
+  height: auto; /* Menjaga aspek rasio */
+  border-radius: 8px; /* Menambah sudut melengkung pada gambar */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Menambah efek bayangan */
+}
+

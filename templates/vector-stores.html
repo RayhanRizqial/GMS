@@ -1,0 +1,175 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Vector Stores{% endblock %} {% block
+page_title %}Vector Stores{% endblock %} {% block content %}
+<style>
+  #vectorList {
+    background-color: #EDE5C8;
+    width: 97%;
+    height: 95%;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+  }
+
+  .vectorListHead,
+  .vectorListItem {
+    display: flex;
+    flex-grow: 1;
+    /* Kolom search akan memenuhi ruang yang tersisa */
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    background-color: #FBF1D2;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+  }
+
+  .vectorListHead {
+    background-color: #FEF5DA;
+    font-weight: bold;
+  }
+
+  .vectorListItem {
+    border-bottom: 1px solid #ccc;
+    margin: 5px 0;
+    height: 3rem;
+  }
+
+  /* .vectorListItem:nth-child(even) {
+          background-color: #f0e9d9;
+        } */
+
+  .urutan,
+  .namaVector,
+  .descVector,
+  .vectorId,
+  .tglVer,
+  .aksi {
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .urutan {
+    flex: 0 0 5%;
+  }
+
+  .namaVector {
+    flex: 0 0 20%;
+  }
+
+  .descVector {
+    flex: 1 1 35%;
+  }
+
+  .vectorId {
+    flex: 0 0 20%;
+  }
+
+  .tglVer {
+    flex: 0 0 10%;
+    text-align: center;
+  }
+
+  .aksi {
+    flex: 0 0 10%;
+    text-align: center;
+  }
+
+  .aksi button {
+    margin: 2px;
+    padding: 5px 10px;
+    background-color: #E0A26F;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .aksi button:hover {
+    background-color: #825c3e;
+  }
+</style>
+</head>
+
+<body>
+  <div class="modelConfig">
+    <div class="head">
+      <div class="kolomSearch">
+        <input type="text" id="searchInput" placeholder="Search model..." />
+      </div>
+      <div class="tombolTambahModel">
+        <a href="/vector-stores/add" style="text-decoration: none;"><button type="button"><i class="fas fa-plus"></i>
+            Tambah Vector</button></a>
+      </div>
+    </div>
+
+    <div id="vectorList">
+      <div class="vectorListHead">
+        <div class="urutan">#</div>
+        <div class="vectorId">Vector Id</div>
+        <div class="namaVector">Nama Vector</div>
+        <div class="descVector">Deskripsi Vector</div>
+        <div class="tglVer">Date</div>
+        <div class="aksi">Action</div>
+      </div>
+      <div id="vectorDataList">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+    </div>
+  </div>
+  <script>
+    let vectorStores = [];
+
+    // Fungsi untuk mengambil data dari API FastAPI
+    async function fetchVectorStores() {
+      try {
+        const response = await fetch("/api/vector-stores");
+        const data = await response.json();
+        vectorStores = data.map(vector => ({
+          id: vector.id,
+          namaVector: vector.namaVector,
+          vectorId: vector.vectorId,
+          descVector: vector.deskripsi,
+          tglVer: vector.date
+        }));
+        displayVectorStores(vectorStores);
+      } catch (error) {
+        console.error("Error fetching vector stores:", error);
+      }
+    }
+
+    // Fungsi untuk mencetak vector store ke dalam HTML
+    function displayVectorStores(vectorStores) {
+      const vectorList = document.getElementById('vectorDataList');
+      vectorList.innerHTML = ''; // Bersihkan kontainer sebelum mencetak ulang
+
+      vectorStores.forEach((item, index) => {
+        const listItem = document.createElement('div');
+        listItem.className = 'vectorListItem';
+        listItem.innerHTML = `
+      <div class="urutan">${index + 1}</div>
+      <div class="vectorId">${item.vectorId}</div>
+      <div class="namaVector">${item.namaVector}</div>
+      <div class="descVector">${item.descVector}</div>
+      <div class="tglVer">${item.tglVer}</div>
+      <div class="aksi">
+        <a href="/vector-stores/sub/?vectorId=${item.vectorId}"><button>Info</button></a>
+        <button onclick="deleteVector(${item.id})">Delete</button>
+      </div>
+    `;
+        vectorList.appendChild(listItem);
+      });
+    }
+
+    function deleteVector(id) {
+      console.log(`Deleting vector with id: ${id}`);
+      // Implement delete functionality
+    }
+
+    // Populate the list when the page loads
+    window.onload = fetchVectorStores;
+  </script>
+  {% endblock %}

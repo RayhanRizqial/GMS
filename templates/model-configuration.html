@@ -1,0 +1,34 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Model Configuration{% endblock %} {%
+  block page_title %}Model Configuration{% endblock %} {% block content %}
+  <div class="modelConfig">
+    <div class="head">
+      <div class="kolomSearch">
+        <input type="text" id="searchInput" placeholder="Search model..." />
+      </div>
+      <!-- <div class="tombolTambahModel">
+        <button type="button"><i class="fas fa-plus"></i> Tambah Model</button>
+      </div> -->
+      <div class="tombolCobaModel">
+        <button type="button"><i class="fas fa-play"></i> Coba Model</button>
+      </div>
+    </div>
+    <div class="headermodel">
+      <div class="headermodelnya">
+        <div class="namaModel">Nama Model</div>
+        <div class="taghead">
+          <div class="judulTag">
+            Tag
+          </div>
+        </div>
+      </div>
+      <div class="actionhead">
+        Action
+      </div>
+    </div>
+    <!-- Tambahkan kontainer untuk menampung daftar model -->
+    <div id="modelListContainer"></div>
+  </div>
+  
+  {% endblock %}
+  

@@ -1,0 +1,44 @@
+#tuningList {
+  background-color: #DAD2B8;
+  width: 97%;
+  height: 95%;
+  border-radius: 15px;
+}
+
+.tuningListHead {
+  display: flex;
+  justify-content: space-between;
+  background-color: #FEF5DA;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.urutanHead {
+  flex: 0 0 5%; /* Lebar tetap untuk urutan */
+  text-align: start;
+}
+
+.namaSuffixHead {
+  flex: 0 0 20%; /* Lebar 20% dari total */
+  text-align: left;
+}
+
+.descTuningHead {
+  flex: 1 1 35%; /* Fleksibel, tapi minimal 35% */
+  text-align: left;
+}
+
+.datasetHead {
+  flex: 0 0 20%; /* Lebar 20% dari total */
+  text-align: left;
+}
+
+.tglVerHead {
+  flex: 0 0 10%; /* Lebar 10% */
+  text-align: center;
+}
+
+.aksiHead {
+  flex: 0 0 10%; /* Lebar tetap 10% */
+  text-align: center;
+}

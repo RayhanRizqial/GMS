@@ -1,0 +1,73 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/navbarHeader.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/dashboard.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/tanyaNekobot.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/model-configuration.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/model-config-set.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/fine-tuning.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <script src="{{ url_for('static', path='js/main.js') }}"></script>
+  </head>
+  <body>
+    <!-- Include Navbar -->
+    {% include 'includes/navbar.html' %}
+
+    <!-- Include Header -->
+    <div class="header">
+      <h1>{% block page_title %}{% endblock %}</h1>
+      <div class="user-info">
+        <div class="user-photo">
+          <!-- Placeholder for user photo -->
+          <i class="fas fa-user-circle"></i>
+          <!-- Example icon, adjust as needed -->
+        </div>
+        <div class="infoAkun">
+          <span class="user-name">Alvito Baihaqie Yosobumi</span>
+          <span class="user-info">Pengguna</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">{% block content %}{% endblock %}</div>
+
+    <script src="{{ url_for('static', path='js/tanyaNekobot.js') }}"></script>
+    <script src="{{ url_for('static', path='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', path='js/model-config.js') }}"></script>
+  </body>
+</html>

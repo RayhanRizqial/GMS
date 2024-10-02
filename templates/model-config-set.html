@@ -1,0 +1,67 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Model Configuration{% endblock %} {% block
+    page_title %}Model Configuration / Edit Model{% endblock %} {% block content %}
+    <script>
+        activeMenuItem = 'model-configuration';
+        document.getElementById(activeMenuItem).classList.add('active');
+    </script>
+    </head>
+
+    <div class="editModel">    
+        <form id="modelForm" action="/model-config-set/{{ model.id }}" method="post">
+            <div class="namaModelId">
+                <div class="namaModelPrint">
+                    <h2>Nama Model</h2>
+                    <input type="text" name="namaModelFineTune" id="namaModel" class="inputText" value="{{ model.namaModel }}" oninput="checkChanges()">    
+                </div>
+                <div class="modelIdPrint">
+                    <h2>Model Id</h2>
+                    <input type="text" name="modelId" id="modelId" class="inputText" value="{{ model.modelId }}" oninput="checkChanges()">
+                </div>
+            </div>
+
+            <h2>Instruksi</h2>
+            <textarea id="instruksiModel" name="instruksiModel" class="dynamicTextarea" oninput="checkChanges()">{{ model.Instruksi }}</textarea>
+            
+            <div class="namaModelId">
+                <div class="namaModelPrint">
+                    <h2>Versi Fine-Tuning</h2>
+                    <input type="text" name="fineTuningVersion" id="fineTuningVersion" class="inputText" value="{{ model.verFine_tuning }}" oninput="checkChanges()">    
+                </div>
+                <div class="modelIdPrint">
+                    <h2>Vector Id</h2>
+                    <input type="text" name="vectorId" id="vectorId" class="inputText" value="{{ model.vectorId }}" oninput="checkChanges()">
+                </div>
+            </div>
+
+            <!-- <h2>Versi Fine-Tuning</h2>
+            <select name="fineTuningVersion" id="fineTuningVersion" class="styledDropdown" onchange="checkChanges()">
+                <option value="personal:model1:A5dBl0zF" {% if model.fineTuningVersion == 'personal:model1:A5dBl0zF' %}selected{% endif %}>Personal: Model 1</option>
+                <option value="personal:model2:B4eCk9gP" {% if model.fineTuningVersion == 'personal:model2:B4eCk9gP' %}selected{% endif %}>Personal: Model 2</option>
+                <option value="personal:model3:C6dLp3hJ" {% if model.fineTuningVersion == 'personal:model3:C6dLp3hJ' %}selected{% endif %}>Personal: Model 3</option>
+                <option value="personal:model4:D7eMq4iK" {% if model.fineTuningVersion == 'personal:model4:D7eMq4iK' %}selected{% endif %}>Personal: Model 4</option>
+                <option value="personal:model5:E8fNr5lL" {% if model.fineTuningVersion == 'personal:model5:E8fNr5lL' %}selected{% endif %}>Personal: Model 5</option>
+            </select>
+    
+            <h2>Vector Id</h2>
+            <select name="vectorId" id="vectorId" class="styledDropdown" onchange="checkChanges()">
+                <option value="personal:model1:A5dBl0zF" {% if model.fineTuningVersion == 'personal:model1:A5dBl0zF' %}selected{% endif %}>Personal: Model 1</option>
+                <option value="personal:model2:B4eCk9gP" {% if model.fineTuningVersion == 'personal:model2:B4eCk9gP' %}selected{% endif %}>Personal: Model 2</option>
+                <option value="personal:model3:C6dLp3hJ" {% if model.fineTuningVersion == 'personal:model3:C6dLp3hJ' %}selected{% endif %}>Personal: Model 3</option>
+                <option value="personal:model4:D7eMq4iK" {% if model.fineTuningVersion == 'personal:model4:D7eMq4iK' %}selected{% endif %}>Personal: Model 4</option>
+                <option value="personal:model5:E8fNr5lL" {% if model.fineTuningVersion == 'personal:model5:E8fNr5lL' %}selected{% endif %}>Personal: Model 5</option>
+            </select> -->
+        
+            <h2>Temp Model</h2>
+            <input type="range" name="temp" id="fineTuneSlider" min="0" max="2" step="0.05" value="{{ model.temp }}" class="slider" onchange="updateSliderValue()" oninput="checkChanges()">
+            <span id="sliderValue">{{ model.temp }}</span>
+        
+            <div class="buttons">
+                <button id="cancelBtn" type="button" class="btn cancel disabled" disabled>Batal</button>
+                <button id="saveBtn" type="submit" class="btn disabled" disabled>Save</button>
+            </div>
+        </form>
+        
+        <!-- INI MA CONTOH CETAK -->
+    
+        {% endblock %}

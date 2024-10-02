@@ -1,0 +1,203 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Fine Tuning{% endblock %} {% block
+page_title %}Fine Tuning{% endblock %} {% block content %}
+<style>
+  #subVector {
+    background-color: #EDE5C8;
+    width: 97%;
+    height: 95%;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+  }
+
+  .subVectorHeader,
+  .subVectorItem {
+    display: flex;
+    flex-grow: 1;
+    /* Kolom search akan memenuhi ruang yang tersisa */
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    background-color: #FBF1D2;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+  }
+
+  .subVectorHeader {
+    background-color: #FEF5DA;
+    font-weight: bold;
+  }
+
+  .subVectorItem {
+    border-bottom: 1px solid #ccc;
+    margin: 5px 0;
+    height: 3rem;
+  }
+
+  /* .subVectorItem:nth-child(even) {
+        background-color: #f0e9d9;
+      } */
+
+  .urutan,
+  .namaTopic,
+  .descInfo,
+  .dataset,
+  .tglVer,
+  .aksi {
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .urutan {
+    flex: 0 0 5%;
+  }
+
+  .namaTopic {
+    flex: 0 0 20%;
+  }
+
+  .descInfo {
+    flex: 1 1 35%;
+  }
+
+  .dataset {
+    flex: 0 0 20%;
+  }
+
+  .tglVer {
+    flex: 0 0 10%;
+    text-align: center;
+  }
+
+  .aksi {
+    flex: 0 0 10%;
+    text-align: center;
+  }
+
+  .aksi button {
+    margin: 2px;
+    padding: 5px 10px;
+    background-color: #E0A26F;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .aksi button:hover {
+    background-color: #825c3e;
+  }
+</style>
+</head>
+
+<body>
+  <div class="modelConfig">
+    <div class="head">
+      <div class="kolomSearch">
+        <input type="text" id="searchInput" placeholder="Search model..." />
+      </div>
+      <div class="tombolTambahModel">
+        <a href="/info-management/add"><button type="button"><i class="fas fa-plus"></i> Tambah Model</button></a>
+      </div>
+      <div class="tombolCobaModel">
+        <button type="button"><i class="fas fa-play"></i> Coba Tuning</button>
+      </div>
+    </div>
+
+    <div id="subVector">
+      <div class="subVectorHeader">
+        <div class="urutan">No</div>
+        <div class="namaTopic">Topik</div>
+        <div class="descInfo">Deskripsi</div>
+        <div class="dataset">Dataset</div>
+        <div class="tglVer">Date</div>
+        <div class="aksi">Action</div>
+      </div>
+      <div id="subVectorDataList">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+    </div>
+
+  </div>
+  <script>
+    // Fungsi untuk menghitung jumlah entri dalam dataset
+    function countDatasetEntries(dataset) {
+      if (Array.isArray(dataset)) {
+        return dataset.length;
+      } else {
+        console.error('Dataset bukan merupakan array');
+        return 0;
+      }
+    }
+
+    let subVectorStores = [];
+
+    // Fungsi untuk mengambil data dari API FastAPI berdasarkan vectorId
+    async function fetchSubVectorStores() {
+      const params = new URLSearchParams(window.location.search);
+      const vectorId = params.get("vectorId");
+
+      if (!vectorId) {
+        console.error("No vectorId provided");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/sub-vector-stores?vectorId=${vectorId}`);
+        const data = await response.json();
+        subVectorStores = data.map(subVector => ({
+          id: subVector.id,
+          vectorId: subVector.vectorId,
+          topik: subVector.topik,
+          deskripsi: subVector.deskripsi,
+          dataset: subVector.dataset,
+          path: subVector.path,
+          filesId: subVector.filesId,
+          tglVer: subVector.date
+        }));
+        displaysubVectorStores(subVectorStores);
+      } catch (error) {
+        console.error("Error fetching sub-vector stores:", error);
+      }
+    }
+
+    // Fungsi untuk menampilkan sub-vector stores ke dalam HTML
+    function displaysubVectorStores(subVectorStores) {
+      const vectorList = document.getElementById('subVectorDataList');
+      vectorList.innerHTML = '';
+
+      subVectorStores.forEach((item, index) => {
+        const datasetCount = countDatasetEntries(item.dataset);
+
+        const listItem = document.createElement('div');
+        listItem.className = 'subVectorItem';
+        listItem.innerHTML = `
+      <div class="urutan">${index + 1}</div>
+      <div class="namaVector">${item.topik}</div>
+      <div class="deskripsi">${item.deskripsi}</div>
+      <div class="dataset">${datasetCount} Percakapan</div>
+      <div class="tglVer">${new Date(item.tglVer).toLocaleString()}</div>
+      <div class="aksi">
+        <a href="/vector-stores/sub/?id=${item.id}"><button>Info</button></a>
+        <button onclick="deleteVector(${item.id})">Delete</button>
+      </div>
+    `;
+        vectorList.appendChild(listItem);
+      });
+    }
+
+    // Fungsi untuk navigasi ke halaman sub-vector stores dengan vectorId
+    function navigateToSubVectors(vectorId) {
+      window.location.href = `/vector-stores/sub/?vectorId=${vectorId}`;
+    }
+
+    // Inisialisasi saat halaman dimuat
+    window.onload = fetchSubVectorStores;
+
+  </script>
+</body>
+{% endblock %}

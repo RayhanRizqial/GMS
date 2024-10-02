@@ -1,0 +1,179 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rhodium+Libre&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Libre Baskerville", serif;
+  background-color: #ede5c8;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #fef5da;
+  width: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  justify-content: flex-start;
+}
+
+.menu-item.active {
+  background-color: #ffe699; /* Warna saat menu aktif */
+  box-shadow: 0 3px 5px rgba(198, 183, 136, 0.4); /* Bayangan lebih tajam */
+  border-radius: 5px;
+  color: #577D8A;
+}
+
+/* Logo Styling */
+.logo {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Rhodium Libre", serif; 
+  font-weight: bold; 
+  font-size: 28px; 
+  color: #333; 
+  letter-spacing: 1px; 
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
+  width: 100%;
+}
+
+.logo:hover {
+  color: #b04147; 
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); 
+  transform: scale(1.02); 
+  transition: all 0.3s ease; 
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.menu-item {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 15px;
+  text-decoration: none; 
+  color: inherit;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-item i {
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.menu-item span {
+  font-size: 16px;
+}
+
+/* Hover effect */
+.menu-item:hover {
+  background-color: #fff2cb; /* Warna hover */
+  box-shadow: 0 4px 6px rgba(198, 183, 136, 0.3); /* Bayangan hover */
+  border-radius: 5px; /* Sedikit rounding pada sudut */
+  transform: scale(1.02); /* Sedikit memperbesar saat di hover */
+}
+
+/* Click effect */
+.menu-item:active {
+  background-color: #ffe699; /* Warna saat di-click */
+  box-shadow: 0 3px 5px rgba(198, 183, 136, 0.4); /* Bayangan lebih tajam saat di-click */
+  transform: scale(0.98); /* Sedikit mengecil saat di-click */
+  color: #577D8A;
+}
+
+.separator {
+  font-style: italic;
+  color: #999;
+  margin: 20px 0 0px;
+  font-size: 14px;
+}
+
+i {
+  font-size: 18px;
+}
+
+/* Header */
+.header {
+  margin-left: 265px; /* Adjust to fit the width of the navbar */
+  padding: 40px;
+  background-color: #fef5da;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: calc(100% - 265px); /* Ensure header stretches to full width */
+  top: 0;
+  left: 0;
+}
+
+.header h1 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.infoAkun {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  margin-right: 15px;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.user-info {
+  font-size: 11px; /* Font size for "Pengguna" */
+}
+
+.user-photo {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0; 
+  margin-right: 10px;
+  border: 1px solid #ccc;
+}
+
+.user-photo i {
+  font-size: 24px; /* Icon size */
+  color: #333; /* Icon color */
+}
+
+/* Container utama */
+.content {
+  display: flex;
+  margin-left: 265px;
+  margin-top: 80px;
+  width: calc(100vw - 265px);
+  height: calc(100vh - 80px);
+  padding: 20px;
+  box-sizing: border-box;
+}

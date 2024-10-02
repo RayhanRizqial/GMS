@@ -1,0 +1,26 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %}
+
+{% block title %}Tanya Nekobot{% endblock %}
+{% block page_title %}Tanya Nekobot{% endblock %}
+
+{% block content %}
+<div class="chat" style="background-image: url('{{ url_for('static', path='images/chatBG.png') }}');">
+  <div class="chat-messages">
+      <!-- Messages will be dynamically added here -->
+  </div>
+  <div class="chat-input">
+      <input type="text" placeholder="Ketik pertanyaan..." />
+      <button type="button" onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+      </button>
+  </div>
+</div>
+<div class="visual">
+  <div class="agen" style="background-image: url('{{ url_for('static', path='images/chatBG2.png') }}');">
+    <img src="{{ url_for('static', path='images/bingung.png') }}" alt="Agen">
+  </div>
+  <div class="info" style="background-image: url('{{ url_for('static', path='images/bg2.jpg') }}');">
+  </div> 
+</div>
+{% endblock %}

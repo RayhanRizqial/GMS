@@ -1,0 +1,200 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Fine Tuning{% endblock %} {% block
+page_title %}Fine Tuning{% endblock %} {% block content %}
+<style>
+  #tuningList {
+    background-color: #EDE5C8;
+    width: 97%;
+    height: 95%;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+  }
+
+  .tuningListHead,
+  .tuningListItem {
+    display: flex;
+    flex-grow: 1;
+    /* Kolom search akan memenuhi ruang yang tersisa */
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    background-color: #FBF1D2;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+  }
+
+  .tuningListHead {
+    background-color: #FEF5DA;
+    font-weight: bold;
+  }
+
+  .tuningListItem {
+    border-bottom: 1px solid #ccc;
+    margin: 5px 0;
+    height: 3rem;
+  }
+
+  /* .tuningListItem:nth-child(even) {
+      background-color: #f0e9d9;
+    } */
+
+  .urutan,
+  .namaSuffix,
+  .descTuning,
+  .status
+  .dataset,
+  .tglVer,
+  .aksi {
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .urutan {
+    flex: 0 0 5%;
+  }
+
+  .namaSuffix {
+    flex: 0 0 20%;
+  }
+
+  .descTuning {
+    flex: 1 1 35%;
+  }
+
+  .status {
+    flex: 0 0 20%;
+  }
+  .dataset {
+    flex: 0 0 20%;
+  }
+
+  .tglVer {
+    flex: 0 0 10%;
+    text-align: center;
+  }
+
+  .aksi {
+    flex: 0 0 10%;
+    text-align: center;
+  }
+
+  .aksi button {
+    margin: 2px;
+    padding: 5px 10px;
+    background-color: #E0A26F;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .aksi button:hover {
+    background-color: #825c3e;
+  }
+</style>
+</head>
+
+<body>
+  <div class="modelConfig">
+    <div class="head">
+      <div class="kolomSearch">
+        <input type="text" id="searchInput" placeholder="Search model..." />
+      </div>
+      <div class="tombolTambahModel">
+        <a href="/fine-tuning/add"><button type="button"><i class="fas fa-plus"></i> Tambah Model</button></a>
+      </div>
+      <div class="tombolCobaModel">
+        <button type="button"><i class="fas fa-play"></i> Coba Tuning</button>
+      </div>
+    </div>
+
+    <div id="tuningList">
+      <div class="tuningListHead">
+        <div class="urutan">#</div>
+        <div class="namaSuffix">Nama Suffix</div>
+        <div class="descTuning">Deskripsi</div>
+        <div class="status">Status</div>
+        <div class="dataset">Dataset</div>
+        <div class="tglVer">Date</div>
+        <div class="aksi">Action</div>
+      </div>
+      <div id="tuningDataList">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+    </div>
+  </div>
+  <script>
+    let fineTunings = [];
+
+    // Fungsi untuk mengambil data dari API FastAPI
+    async function fetchFineTunings() {
+      try {
+        const response = await fetch("/api/fine-tuning");
+        const data = await response.json();
+        fineTunings = data.map(tuning => ({
+          id: tuning.id,
+          namaSuffix: tuning.namaSuffix,
+          descTuning: tuning.deskripsi,
+          status: tuning.status,
+          dataset: tuning.dataset,
+          tglVer: tuning.date
+        }));
+        displayFineTunings(fineTunings);
+      } catch (error) {
+        console.error("Error fetching fine-tunings:", error);
+      }
+    }
+
+    function countDatasetEntries(dataset) {
+      if (Array.isArray(dataset)) {
+        return dataset.length;
+      } else {
+        console.error('Dataset bukan merupakan array');
+        return 0;
+      }
+    }
+
+    // Fungsi untuk mencetak fine-tuning ke dalam HTML
+    function displayFineTunings(fineTunings) {
+      const tuningList = document.getElementById('tuningDataList');
+      tuningList.innerHTML = ''; // Bersihkan kontainer sebelum mencetak ulang
+
+      fineTunings.forEach((item, index) => {
+        const datasetCount = countDatasetEntries(item.dataset);
+
+        const listItem = document.createElement('div');
+        listItem.className = 'tuningListItem';
+        listItem.innerHTML = `
+      <div class="urutan">${index + 1}</div>
+      <div class="namaSuffix">${item.namaSuffix}</div>
+      <div class="descTuning">${item.descTuning}</div>
+      <div class="status">${item.status}</div>
+      <div class="dataset">${datasetCount} Percakapan</div>
+      <div class="tglVer">${item.tglVer}</div>
+      <div class="aksi">
+        <a href="/fine-tuning/info?id=${item.id}"><button>Info</button></a>
+        <button onclick="deleteModel(${item.id})">Delete</button>
+      </div>
+    `;
+        tuningList.appendChild(listItem);
+      });
+    }
+
+    function editModel(id) {
+      console.log(`Editing model with id: ${id}`);
+      // Implement edit functionality
+    }
+
+    function deleteModel(id) {
+      console.log(`Deleting model with id: ${id}`);
+      // Implement delete functionality
+    }
+
+    // Populate the list when the page loads
+    window.onload = fetchFineTunings;
+  </script>
+  {% endblock %}

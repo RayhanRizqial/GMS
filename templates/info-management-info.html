@@ -1,0 +1,478 @@
+<!-- templates/dashboard.html -->
+
+{% extends 'base.html' %}
+{% block title %}Fine Tuning Info{% endblock %}
+{% block page_title %}Fine Tuning Info{% endblock %}
+{% block content %}
+
+<style>
+  .delete-button {
+    margin-left: 26rem;
+    background-color: #d9534f;
+    /* Warna merah untuk tombol hapus */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .dataset-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .dataset-content h4 {
+    margin-top: 0;
+  }
+
+  .dataset-content textarea {
+    width: auto;
+    border-radius: 15px;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .dataset-wrapper {
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    background-color: #FEF5DA;
+    /* display: flex; */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .add-dataset-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .add-dataset-button {
+    width: 10rem;
+    height: 3rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #EB5757;
+    /* Warna background saat aktif */
+    color: white;
+    cursor: pointer;
+    /* transform: translateX(9rem); */
+    transition: background-color 0.3s ease;
+    /* Transisi warna background */
+  }
+
+  .add-dataset-button-recently {
+    width: auto;
+    height: 3rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #E0A26F;
+    /* Warna background saat aktif */
+    color: white;
+    cursor: pointer;
+    /* transform: translateX(9rem); */
+    transition: background-color 0.3s ease;
+    /* Transisi warna background */
+  }
+
+
+
+  /* Styling saat tombol dalam keadaan hover */
+  .add-dataset-button:hover {
+    background-color: #e04a4a;
+    /* Warna saat hover */
+  }
+
+  /* Styling saat tombol dinonaktifkan */
+  .add-dataset-button:disabled,
+  .add-dataset-button.disabled {
+    /* background-color: #987676; */
+
+    /* Warna background saat dinonaktifkan */
+    color: #a0a0a0;
+    /* Warna teks saat dinonaktifkan */
+    cursor: not-allowed;
+  }
+
+  .infoManagement--container {
+    width: 100%;
+    height: 100%;
+    background-color: #EDE5C8;
+  }
+
+  .infoManagement--leftSide,
+  .infoManagement--rightSide {
+    display: flex;
+    flex-direction: column;
+    width: 36rem;
+    height: auto;
+    background-color: #FEF5DA;
+    margin: 1rem;
+    padding: 40px;
+    gap: 1rem;
+    border-radius: 24px;
+  }
+
+  .infoManagement--form {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .info-field {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .download-button {
+    width: 8rem;
+    height: 3rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #EB5757;
+    color: white;
+    cursor: pointer;
+  }
+
+  .status-button {
+    width: 8rem;
+    height: 3rem;
+    border-radius: 10px;
+    border: none;
+    background-color: #577D8A;
+    color: white;
+  }
+
+  /* .dataset-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+  } */
+
+  /* .dataset-content p {
+    margin: 5px 0;
+  } */
+
+  .card-container {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* Ensure it sits on top of other elements */
+  }
+
+  .card {
+    background: #FEF5DA;
+    padding: 20px;
+    border-radius: 10px;
+    width: 450px;
+    height: 600px;
+  }
+
+  .card-title {
+    margin-bottom: 20px;
+  }
+
+  .card-dropdown {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 8px;
+  }
+
+  .card-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .card-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .card-cancel {
+    background: #EB5757;
+    /* Red */
+    color: white;
+  }
+
+  .card-submit {
+    background: #577D8A;
+    /* Green */
+    color: white;
+  }
+</style>
+
+<body>
+  <div class="infoManagement--container">
+    <div class="infoManagement--form">
+      <div class="infoManagement--leftSide">
+        <h3><strong>Deskripsi</strong></h3>
+        <div class="info-field"></div>
+
+        <h3><strong>Files-id:</strong></h3>
+        <div class="info-field"></div>
+
+        <h3><strong>Topik:</strong></h3>
+        <div class="info-field"></div>
+
+        <h3><strong>Deskripsi:</strong></h3>
+        <div class="info-field" style="height: 100px;"></div>
+
+        <h3><strong>File JSONL:</strong></h3>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="info-field" style="flex-grow: 1;">Contoh.jsonl</div>
+          <button onclick="downloadFile()" class="download-button"><strong>Download</strong></button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+          <div>
+            <h3><strong>Status:</strong></h3>
+            <button class="status-button"><strong>Sukses</strong></button>
+          </div>
+
+        </div>
+      </div>
+      <!-- Kesini -->
+      <div class="infoManagement--rightSide">
+        <!-- Tombol Tambah Dataset -->
+        <div class="add-dataset-container">
+          <button type="button" class="add-dataset-button" onclick="addDataset()" id="addDatasetButton">Tambah
+            Dataset</button>
+          <button type="button" class="add-dataset-button-recently" onclick="chooseModel()" id="addDatasetButton">Tambah
+            Dataset yang Pernah dibuat</button>
+        </div>
+
+
+        <div style="max-height: 30rem; overflow-y: auto;">
+          <!-- Tempat untuk menambahkan dataset -->
+          <div id="dataset-container" style="display: flex; flex-direction:column"></div>
+
+        </div>
+      </div>
+      <!-- Card Container -->
+      <div id="cardContainer" class="card-container">
+        <div class="card">
+          <h5 class="card-title"><b>Pilih Dataset yang Pernah Dibuat</b></h5>
+          <label class="mb-2" for=""><b>Data</b></label>
+          <select id="datasetDropdown" class="card-dropdown">
+            <!-- Options will be dynamically added here -->
+          </select>
+          <div class="card-buttons">
+            <button type="button" class="card-button card-cancel" onclick="closeCard()">Batal</button>
+            <button type="button" class="card-button card-submit" onclick="submitSelection()">Pilih</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div style="max-height: 30rem; overflow-y: auto;">
+        <div id="dataset-container">
+          <!-- Dataset yang akan dimasukkan dinamis -->
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+
+
+<script>
+  function downloadFile() {
+    // Implementasi fungsi download file
+    alert('Downloading FineTune.jsonl');
+  }
+</script>
+<script>
+  // Ambil parameter ID dari URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const infoManagementId = urlParams.get('id');
+
+  // Fungsi untuk mengambil detail fine-tuning berdasarkan ID
+  async function fetchinfoManagementDetails(id) {
+    try {
+      const response = await fetch(`/api/fine-tuning/${id}`);
+      if (!response.ok) {
+        throw new Error("Data tidak ditemukan");
+      }
+      const infoManagementData = await response.json();
+
+      // Update konten halaman dengan data fine-tuning yang diterima
+      document.querySelector('.infoManagement--leftSide .info-field:nth-child(6)').innerText = infoManagementData.namaSuffix;
+      document.querySelector('.infoManagement--leftSide .info-field:nth-child(4)').innerText = infoManagementData.id;
+      document.querySelector('.infoManagement--leftSide .info-field:nth-child(8)').innerText = infoManagementData.deskripsi;
+      document.querySelector('.infoManagement--leftSide div div .info-field:nth-child(2)').innerText = infoManagementData.epocs;
+
+      // Tampilkan modelOutput di sebelah kanan
+      document.querySelector('.infoManagement--rightSide .info-field').innerText = infoManagementData.modelOutput || "Tidak ada output model";
+
+      // Jika dataset dalam bentuk JSON, loop untuk menampilkan dataset
+      const datasetContainer = document.getElementById('dataset-container');
+      datasetContainer.innerHTML = '';  // Bersihkan kontainer sebelum menampilkan data baru
+      infoManagementData.dataset.forEach((dataset, index) => {
+        const datasetWrapper = document.createElement('div');
+        datasetWrapper.classList.add('dataset-wrapper');
+        datasetWrapper.innerHTML = `
+          <h3>Dataset ${index + 1}</h3>
+          <div class="dataset-content">
+            <h4>User:</h4>
+            <p>${dataset[0]}</p> <!-- Data User -->
+            <h4>Assistant:</h4>
+            <p>${dataset[1]}</p> <!-- Data Assistant -->
+          </div>
+        `;
+        datasetContainer.appendChild(datasetWrapper);
+      });
+    } catch (error) {
+      console.error("Error fetching fine-tuning details:", error);
+    }
+  }
+
+  let datasetCount = 0; // Untuk menghitung jumlah dataset yang sudah ditambahkan
+
+  function addDataset() {
+    datasetCount++; // Increment counter setiap kali tombol ditekan
+
+    // Membuat div container untuk dataset
+    const datasetWrapper = document.createElement('div');
+    datasetWrapper.className = 'dataset-wrapper';
+
+    // Membuat div untuk header dataset
+    const datasetHeader = document.createElement('div');
+    datasetHeader.className = 'dataset-header';
+
+    // Membuat judul Dataset
+    const datasetTitle = document.createElement('h6');
+    datasetTitle.textContent = 'Dataset ' + datasetCount;
+
+    // Membuat tombol Hapus
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Hapus';
+    deleteButton.className = 'delete-button';
+    deleteButton.addEventListener('click', function () {
+      datasetWrapper.remove(); // Menghapus div dataset
+    });
+
+    // Memasukkan elemen header ke dalam div dataset
+    datasetHeader.appendChild(datasetTitle);
+    datasetHeader.appendChild(deleteButton);
+
+    // Membuat div untuk konten dataset
+    const datasetContent = document.createElement('div');
+    datasetContent.className = 'dataset-content';
+
+    // Membuat textarea untuk User
+    const userLabel = document.createElement('label');
+    userLabel.textContent = 'User:';
+    const userTextarea = document.createElement('textarea');
+    userTextarea.name = `user_${datasetCount}`;
+    userTextarea.rows = 2;
+
+    // Membuat textarea untuk Assistant
+    const assistantLabel = document.createElement('label');
+    assistantLabel.textContent = 'Assistant:';
+    const assistantTextarea = document.createElement('textarea');
+    assistantTextarea.name = `assistant_${datasetCount}`;
+    assistantTextarea.rows = 2;
+
+    // Memasukkan elemen ke dalam div dataset content
+    datasetContent.appendChild(userLabel);
+    datasetContent.appendChild(userTextarea);
+    datasetContent.appendChild(assistantLabel);
+    datasetContent.appendChild(assistantTextarea);
+
+    // Memasukkan elemen header dan content ke dalam div dataset wrapper
+    datasetWrapper.appendChild(datasetHeader);
+    datasetWrapper.appendChild(datasetContent);
+
+    // Menambahkan datasetWrapper ke dalam container utama
+    document.getElementById('dataset-container').appendChild(datasetWrapper);
+  }
+  async function fetchDatasets() {
+    try {
+      // -- Belum disesuain sesuai info Management --
+      const response = await fetch("/fine-tuning/get");
+      const datasets = await response.json();
+
+      const dropdown = document.getElementById('datasetDropdown');
+      dropdown.innerHTML = '';  // Clear existing options
+
+      datasets.forEach(dataset => {
+        const option = document.createElement('option');
+        option.value = dataset.id;
+        option.textContent = dataset.namaSuffix;
+        dropdown.appendChild(option);
+      });
+    } catch (error) {
+      console.error('Error fetching datasets:', error);
+    }
+  }
+
+  async function submitSelection() {
+    const selectedValue = document.querySelector('.card-dropdown').value;
+    const datasetContainer = document.getElementById('dataset-container');
+
+    try {
+      const response = await fetch(`/api/dataset/${selectedValue}`);
+      const data = await response.json();
+
+      displayDataset(data.dataset);
+      closeCard();
+    } catch (error) {
+      console.error('Error fetching dataset:', error);
+    }
+  }
+
+  let lastDatasetNumber = 0;
+
+  function displayDataset(dataset) {
+    const datasetContainer = document.getElementById('dataset-container');
+    datasetContainer.innerHTML = '';
+
+    dataset.forEach((item, index) => {
+      lastDatasetNumber++;
+      const datasetWrapper = createDatasetElement(lastDatasetNumber, item[0], item[1]);
+      datasetContainer.appendChild(datasetWrapper);
+    });
+  }
+
+  function chooseModel() {
+    document.getElementById('cardContainer').style.display = 'flex';
+  }
+
+  function closeCard() {
+    document.getElementById('cardContainer').style.display = 'none';
+  }
+
+
+  // Panggil fungsi untuk mengambil data ketika halaman dimuat
+  window.onload = function () {
+    if (infoManagementId) {
+      fetchinfoManagementDetails(infoManagementId);
+    } else {
+      console.error("ID fine-tuning tidak ditemukan di URL");
+    }
+  };
+</script>
+
+
+{% endblock %}

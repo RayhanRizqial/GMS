@@ -1,0 +1,625 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %} {% block title %}Vector Stores{% endblock %} {% block
+page_title %}Vector Stores / Tambah Vector Stores{% endblock %} {% block content %}
+
+<script>
+    activeMenuItem = 'vector-stores';
+    document.getElementById(activeMenuItem).classList.add('active');
+</script>
+
+<style>
+    .vector-stores--container {
+        width: 100%;
+        height: 100%;
+        background-color: #EDE5C8;
+    }
+
+    .vector-stores--leftSide {
+        display: flex;
+        flex-direction: column;
+        width: 32rem;
+        height: 44rem;
+        background-color: #FEF5DA;
+        margin: 1rem;
+        padding: 40px;
+        gap: 1rem;
+        border-radius: 24px;
+    }
+
+    .vector-stores--rightSide {
+        display: flex;
+        flex-direction: column;
+        width: 32rem;
+        height: 44rem;
+        background-color: #FEF5DA;
+        margin: 1rem;
+        padding: 40px;
+        transition: background-color 0.3s ease;
+        gap: 1rem;
+        border-radius: 24px;
+    }
+
+    .vector-stores--form {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .vector-stores--form label,
+    .vector-stores--form textarea,
+    .vector-stores--form input {
+        margin-bottom: 0;
+    }
+
+    .disabled {
+        /* background-color: rgb(110, 96, 71) ; */
+        opacity: 66%;
+        pointer-events: none;
+        cursor: not-allowed;
+        /* Mencegah interaksi pengguna */
+        /* Warna gelap ketika disabled */
+    }
+
+    /* Sembunyikan radio button asli */
+    input[type="radio"] {
+        display: none;
+    }
+
+    /* Styling untuk tombol sebagai pengganti radio */
+    .radio-button-label {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #EB5757;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
+        color: white;
+    }
+
+    /* Warna tombol saat radio button aktif */
+    input[type="radio"]:checked+.radio-button-label {
+        background-color: #a13939;
+    }
+
+    /* Warna tombol saat hover */
+    .radio-button-label:hover {
+        background-color: #bd4343;
+    }
+
+    .file-upload-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        /* Jarak antara tombol file dan info file */
+    }
+
+    .file-upload-container label {
+        font-size: 1rem;
+    }
+
+    .custom-file-upload {
+        width: 8rem;
+        height: 3rem;
+        border-radius: 10px;
+        border: none;
+        background-color: #EB5757;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-file-upload:hover {
+        background-color: #e04a4a;
+        /* Warna saat hover */
+    }
+
+    #file-info {
+        font-size: 1rem;
+        color: #333;
+        /* Warna teks info file */
+    }
+
+    .add-dataset-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .add-dataset-button {
+        width: 10rem;
+        height: 3rem;
+        border-radius: 10px;
+        border: none;
+        background-color: #EB5757;
+        /* Warna background saat aktif */
+        color: white;
+        cursor: pointer;
+        /* transform: translateX(9rem); */
+        transition: background-color 0.3s ease;
+        /* Transisi warna background */
+    }
+
+    .add-dataset-button-recently {
+        width: auto;
+        height: 3rem;
+        border-radius: 10px;
+        border: none;
+        background-color: #E0A26F;
+        /* Warna background saat aktif */
+        color: white;
+        cursor: pointer;
+        /* transform: translateX(9rem); */
+        transition: background-color 0.3s ease;
+        /* Transisi warna background */
+    }
+
+
+
+    /* Styling saat tombol dalam keadaan hover */
+    .add-dataset-button:hover {
+        background-color: #e04a4a;
+        /* Warna saat hover */
+    }
+
+    /* Styling saat tombol dinonaktifkan */
+    .add-dataset-button:disabled,
+    .add-dataset-button.disabled {
+        /* background-color: #987676; */
+
+        /* Warna background saat dinonaktifkan */
+        color: #a0a0a0;
+        /* Warna teks saat dinonaktifkan */
+        cursor: not-allowed;
+    }
+
+    .dataset-wrapper {
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        background-color: #FEF5DA;
+        /* display: flex; */
+        /* Mengaktifkan Flexbox */
+        justify-content: space-between;
+        /* Memastikan konten berada di kedua sisi */
+        align-items: center;
+        /* Menyelaraskan elemen secara vertikal */
+    }
+
+    .dataset-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+    }
+
+    .delete-button {
+        margin-left: 14rem;
+        background-color: #d9534f;
+        /* Warna merah untuk tombol hapus */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .delete-button:hover {
+        background-color: #c9302c;
+        /* Warna merah lebih gelap saat hover */
+    }
+
+
+    .dataset-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .dataset-content h4 {
+        margin-top: 0;
+    }
+
+    .dataset-content textarea {
+        width: auto;
+        border-radius: 15px;
+        padding: 0.5rem;
+        box-sizing: border-box;
+    }
+
+    .card-container {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        /* Semi-transparent background */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        /* Ensure it sits on top of other elements */
+    }
+
+    .card {
+        background: #FEF5DA;
+        padding: 20px;
+        border-radius: 10px;
+        width: 450px;
+        height: 600px;
+    }
+
+    .card-title {
+        margin-bottom: 20px;
+    }
+
+    .card-dropdown {
+        margin-bottom: 20px;
+        border-radius: 10px;
+        padding: 8px;
+    }
+
+    .card-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .card-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .card-cancel {
+        background: #EB5757;
+        /* Red */
+        color: white;
+    }
+
+    .card-submit {
+        background: #577D8A;
+        /* Green */
+        color: white;
+    }
+</style>
+<script>
+    async function createVectorStore() {
+        // Ambil elemen-elemen input
+        const nameInput = document.getElementById("vector_store_name");
+        const filesInput = document.getElementById("vector_store_files");
+        const statusMessage = document.getElementById("status-message");
+    
+        // Validasi input
+        if (!nameInput.value || filesInput.files.length === 0) {
+            statusMessage.textContent = "Please provide a name and select at least one file.";
+            return;
+        }
+    
+        // Buat objek FormData
+        const formData = new FormData();
+        formData.append("name", nameInput.value);
+    
+        // Tambahkan file ke FormData
+        for (let i = 0; i < filesInput.files.length; i++) {
+            formData.append("files", filesInput.files[i]);
+        }
+    
+        try {
+            // Kirim data ke endpoint menggunakan fetch API
+            const response = await fetch("/create-vector-store/", {
+                method: "POST",
+                body: formData
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+    
+            const result = await response.json();
+            statusMessage.textContent = `Vector store created successfully with ID: ${result.vector_store_id}`;
+        } catch (error) {
+            statusMessage.textContent = `Error creating vector store: ${error.message}`;
+        }
+    }
+</script>
+</head>
+<!-- timan titik aman timan titik aman, ini aman timan titik aman so far so good-->
+
+<body onload=initPage()>
+    <div class="vector-stores--container">
+        <form class="vector-stores--form" enctype="multipart/form-data">
+            <div class="vector-stores--leftSide">
+                <!-- Nama Vector -->
+                <label for="namaVector"><strong>Nama Vector:</strong></label>
+                <textarea id="vector_store_name" name="namaVector" rows="3"
+                style="width: 100%; min-height: 45px; border-radius: 10px; font-size: 14px; padding: 4px; height: 52px;"></textarea>
+
+                <!-- Deskripsi -->
+                <label for="deskripsi"><strong>Deskripsi:</strong></label>
+                <textarea id="deskripsi" name="deskripsi" rows="3"
+                style="width: 100%; min-height: 45px; border-radius: 10px; font-size: 14px; padding: 4px; height: 52px;"></textarea>
+
+                <!-- Dataset (radio buttons) -->
+                <div>
+                    <label><strong>Dataset:</strong></label>
+                    <br>
+                    <input type="radio" id="file" name="dataset" value="File" onclick="toggleInputs()" checked>
+                    <label for="file" class="radio-button-label">File</label>
+
+                    <input type="radio" id="inputDialog" name="dataset" value="InputDialog" onclick="toggleInputs()">
+                    <label for="inputDialog" class="radio-button-label">Input Dialog</label>
+                </div>
+
+                <!-- File JSONL -->
+                <div class="file-upload-container">
+                    <label for="jsonlFile"><strong>File JSONL:</strong></label>
+                    <div>
+                        <label for="jsonlFile" class="custom-file-upload">Choose File</label>
+                        <input type="file" id="jsonlFile" name="jsonlFile" accept=".jsonl" style="display: none;">
+                        <span id="file-info">No file chosen</span>
+                    </div>
+                </div>
+
+                <!-- Vector ID (now an input field) -->
+                <label for="vectorId"><strong>Vector Id:</strong></label>
+                <p id="vectorIdDisplay">-</p>
+                <input type="hidden" id="vectorId" name="vectorId" value="-">
+
+                <label for="vector_store_files">Upload Files:</label>
+                <input type="file" id="vector_store_files" multiple required><br><br>
+                <button onclick="createVectorStore()">Create Vector Store</button>
+                <div id="status-message"></div>
+                
+                <!-- Button Group -->
+                <div class="button-group" style="display:flex; gap:1rem; justify-content: end;">
+                    <button type="button" onclick="window.history.back()"
+                        style="width: 8rem; height: 3rem; border-radius: 10px; border: none; background-color: #EB5757; color: white;"><strong>Batal</strong></button>
+                    <button type="button" onclick="uploadData()"
+                        style="width: 8rem; height: 3rem; border-radius: 10px; border: none; background-color: #577D8A; color: white;"><strong>Update</strong></button>
+                </div>
+            </div>
+
+            <div class="vector-stores--rightSide" id="rightSide">
+                <!-- Tombol Tambah Dataset -->
+                <div class="add-dataset-container">
+                    <button type="button" class="add-dataset-button" onclick="addDataset()" id="addDatasetButton">Tambah
+                        Dataset</button>
+                    <button type="button" class="add-dataset-button-recently" onclick="chooseModel()"
+                        id="addDatasetButton">Tambah Dataset yang Pernah dibuat</button>
+                </div>
+
+                <div style="max-height: 30rem; overflow-y: auto;">
+                    <!-- Tempat untuk menambahkan dataset -->
+                    <div id="dataset-container" style="display: flex; flex-direction:column"></div>
+                </div>
+            </div>
+
+            <!-- Card Container -->
+            <div id="cardContainer" class="card-container">
+                <div class="card">
+                    <h5 class="card-title"><b>Pilih Dataset yang Pernah Dibuat</b></h5>
+                    <label class="mb-2" for=""><b>Data</b></label>
+                    <select id="datasetDropdown" class="card-dropdown">
+                        <!-- Options will be dynamically added here -->
+                    </select>
+                    <div class="card-buttons">
+                        <button type="button" class="card-button card-cancel" onclick="closeCard()">Batal</button>
+                        <button type="button" class="card-button card-submit" onclick="submitSelection()">Pilih</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let datasetCount = 0; // Untuk menghitung jumlah dataset yang sudah ditambahkan
+
+        function addDataset() {
+            datasetCount++; // Increment counter setiap kali tombol ditekan
+
+            const datasetWrapper = document.createElement('div');
+            datasetWrapper.className = 'dataset-wrapper';
+
+            const datasetHeader = document.createElement('div');
+            datasetHeader.className = 'dataset-header';
+
+            const datasetTitle = document.createElement('h6');
+            datasetTitle.textContent = 'Dataset ' + datasetCount;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Hapus';
+            deleteButton.className = 'delete-button';
+            deleteButton.addEventListener('click', function () {
+                datasetWrapper.remove(); // Menghapus div dataset
+            });
+
+            datasetHeader.appendChild(datasetTitle);
+            datasetHeader.appendChild(deleteButton);
+
+            const datasetContent = document.createElement('div');
+            datasetContent.className = 'dataset-content';
+
+            const userLabel = document.createElement('label');
+            userLabel.textContent = 'User:';
+            const userTextarea = document.createElement('textarea');
+            userTextarea.name = `user_${datasetCount}`;
+            userTextarea.rows = 2;
+
+            const assistantLabel = document.createElement('label');
+            assistantLabel.textContent = 'Assistant:';
+            const assistantTextarea = document.createElement('textarea');
+            assistantTextarea.name = `assistant_${datasetCount}`;
+            assistantTextarea.rows = 2;
+
+            datasetContent.appendChild(userLabel);
+            datasetContent.appendChild(userTextarea);
+            datasetContent.appendChild(assistantLabel);
+            datasetContent.appendChild(assistantTextarea);
+
+            datasetWrapper.appendChild(datasetHeader);
+            datasetWrapper.appendChild(datasetContent);
+
+            document.getElementById('dataset-container').appendChild(datasetWrapper);
+        }
+
+        function chooseModel() {
+            document.getElementById('cardContainer').style.display = 'flex';
+        }
+
+        function closeCard() {
+            document.getElementById('cardContainer').style.display = 'none';
+        }
+
+        async function uploadData() {
+            console.log('Uploading data...');
+            const formData = new FormData(document.querySelector('.vector-stores--form'));
+
+            try {
+                // 1. Panggil endpoint pertama untuk vector_stores
+                const responseVector = await fetch('/submit-vector-store', {
+                    method: 'POST',
+                    body: formData
+                });
+                const resultVector = await responseVector.json();
+
+                if (responseVector.ok) {
+                    console.log('VectorStore uploaded:', resultVector);
+
+                    // 2. Setelah vector_stores berhasil, panggil endpoint kedua untuk sub_vector_stores
+                    const jsonlFile = formData.get('jsonlFile'); // File JSONL dari percakapan user dan assistant
+                    const subVectorData = new FormData();
+
+                    subVectorData.append('vectorId', resultVector.vectorId);  // Ambil vectorId dari hasil response pertama
+                    subVectorData.append('filesId', jsonlFile ? jsonlFile.name : '');  // Periksa jika file tersedia
+                    subVectorData.append('deskripsi', formData.get('deskripsi'));
+
+                    // Jika file JSONL ada, upload isinya sebagai dataset
+                    if (jsonlFile && jsonlFile.size > 0) {
+                        subVectorData.append('jsonlFile', jsonlFile);  // Lampirkan file JSONL
+                    } else {
+                        // Jika tidak ada file JSONL, ambil input percakapan dari form
+                        const dataset = [];
+                        document.querySelectorAll('.dataset-wrapper').forEach((wrapper, index) => {
+                            const userText = wrapper.querySelector(`textarea[name="user_${index + 1}"]`).value;
+                            const assistantText = wrapper.querySelector(`textarea[name="assistant_${index + 1}"]`).value;
+                            if (userText && assistantText) {
+                                dataset.push({ user: userText, assistant: assistantText });
+                            }
+                        });
+                        subVectorData.append('dataset', JSON.stringify(dataset));  // Kirim dataset sebagai JSON string
+                    }
+
+                    const responseSubVector = await fetch('/upload-sub-vector', {
+                        method: 'POST',
+                        body: subVectorData
+                    });
+
+                    const resultSubVector = await responseSubVector.json();
+
+                    if (responseSubVector.ok) {
+                        console.log('SubVectorStore uploaded:', resultSubVector);
+                        window.location.href = `/vector-stores`;
+                    } else {
+                        throw new Error(resultSubVector.message);
+                    }
+                } else {
+                    throw new Error(resultVector.message);
+                }
+
+            } catch (error) {
+                console.error('Upload failed:', error);
+                alert('Error during upload: ' + error.message);
+            }
+        }
+
+
+        async function submitSelection() {
+            const selectedValue = document.querySelector('.card-dropdown').value;
+            const datasetContainer = document.getElementById('dataset-container');
+
+            try {
+                const response = await fetch(`/api/dataset/${selectedValue}`);
+                const data = await response.json();
+
+                displayDataset(data.dataset);
+                closeCard();
+            } catch (error) {
+                console.error('Error fetching dataset:', error);
+            }
+        }
+
+        function toggleInputs() {
+            const isFileSelected = document.getElementById('file').checked;
+            const rightSide = document.getElementById('rightSide');
+            const fileInput = document.getElementById('jsonlFile');
+            const tambahDatasetButton = document.getElementById('addDatasetButton');
+            const datasetGroups = document.querySelectorAll('.dataset-group');
+
+            if (isFileSelected) {
+                rightSide.classList.add('disabled');
+                fileInput.disabled = false;
+                fileInput.required = true;
+                fileInput.classList.remove('disabled');
+                tambahDatasetButton.disabled = true;
+                tambahDatasetButton.classList.add('disabled');
+
+                datasetGroups.forEach(group => {
+                    group.querySelectorAll('textarea').forEach(textarea => {
+                        textarea.disabled = true;
+                        textarea.required = false;
+                        textarea.classList.add('disabled');
+                    });
+                });
+            } else {
+                rightSide.classList.remove('disabled');
+                fileInput.disabled = true;
+                fileInput.required = false;
+                fileInput.classList.add('disabled');
+                tambahDatasetButton.disabled = false;
+                tambahDatasetButton.classList.remove('disabled');
+                datasetGroups.forEach(group => {
+                    group.querySelectorAll('textarea').forEach(textarea => {
+                        textarea.disabled = false;
+                        textarea.required = true;
+                        textarea.classList.remove('disabled');
+                    });
+                });
+            }
+        }
+
+        document.querySelectorAll('input[name="dataset"]').forEach(radio => {
+            radio.addEventListener('change', toggleInputs);
+        });
+
+        document.addEventListener('DOMContentLoaded', toggleInputs);
+
+        document.getElementById('jsonlFile').addEventListener('change', function () {
+            const fileInput = document.getElementById('jsonlFile');
+            const fileInfo = document.getElementById('file-info');
+
+            if (fileInput.files.length > 0) {
+                fileInfo.textContent = fileInput.files[0].name;
+            } else {
+                fileInfo.textContent = 'No file chosen';
+            }
+        });
+
+        function initPage() {
+            // Additional initializations can be done here
+        }
+    </script>
+</body>
+
+
+{% endblock %}

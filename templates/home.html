@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio Recorder</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/home.css') }}"
+    />
+  </head>
+
+  <body class="container mt-5">
+    <div class="container text-center">
+      <h1 class="display-2 m-5">Emotion Analysis with ChatGPT</h1>
+
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <img
+            src="{{ url_for('static', path='images/chatBG.png') }}"
+            alt="Your Image"
+            class="img-fluid mb-3"
+          />
+          <audio id="audioPlayer" class="mb-3" controls></audio>
+          <a href="{{ url_for('home') }}" class="btn btn-primary">Go to Home</a>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <button id="startRecord" class="btn btn-primary">
+            Start Recording
+          </button>
+          <button id="stopRecord" class="btn btn-danger" disabled>
+            Stop Recording
+          </button>
+          <button id="clearRecord" class="btn btn-warning" disabled>
+            Clear Recording
+          </button>
+          <button id="postAudio" class="btn btn-success" disabled>
+            Analisis Suara
+          </button>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mt-3">
+        <div class="text-center" id="loading"></div>
+      </div>
+
+      <div class="row justify-content-center mt-3">
+        <div class="text-center" id="transcriptionContainer"></div>
+      </div>
+
+      <div class="row justify-content-center mt-3">
+        <div class="text-center" id="responseContainer"></div>
+      </div>
+    </div>
+
+    <script>
+      let mediaRecorder;
+      let recordedChunks = [];
+
+      const startRecording = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(recordedChunks, { type: "audio/wav" });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          document.getElementById("audioPlayer").src = audioUrl;
+
+          // Enable the post button setelah recording selesai
+          document.getElementById("postAudio").disabled = false;
+          document.getElementById("clearRecord").disabled = false;
+        };
+
+        mediaRecorder.start();
+        document.getElementById("startRecord").disabled = true;
+        document.getElementById("stopRecord").disabled = false;
+      };
+
+      const stopRecording = () => {
+        mediaRecorder.stop();
+        document.getElementById("startRecord").disabled = false;
+        document.getElementById("stopRecord").disabled = true;
+      };
+
+      // const clearRecording = () => {
+      //     recordedChunks = [];
+      //     document.getElementById('audioPlayer').src = '';
+
+      //     document.getElementById('postAudio').disabled = true;
+      //     document.getElementById('clearRecord').disabled = true;
+      // };
+
+      const postAudio = async () => {
+        try {
+          // Display "Loading..."
+          const loadingDiv = document.getElementById("loading");
+          loadingDiv.innerHTML =
+            '<h1 class="display-4">Sedang menganalisis...</h1>';
+
+          // Membuat file audio dari chunks
+          const audioBlob = new Blob(recordedChunks, { type: "audio/wav" });
+
+          // Membuat dan Post FormData
+          var formData = new FormData();
+          formData.append("file", audioBlob, "recorded_audio.wav"); // Use 'file' as the key
+
+          const response = await fetch("/upload-audio", {
+            method: "POST",
+            body: formData,
+          });
+
+          // Hapus loading text
+          loadingDiv.innerHTML = "";
+
+          if (response.ok) {
+            const result = await response.json(); // Assuming the server returns JSON
+
+            // Display transcription
+            const transcriptionContainer = document.getElementById(
+              "transcriptionContainer"
+            );
+            transcriptionContainer.innerHTML = `<h1 class="display-4">Transcribed Text</h1><p class="fs-5">${result.transcription}</p>`;
+
+            // Display response
+            const responseContainer =
+              document.getElementById("responseContainer");
+            responseContainer.innerHTML = `<h1 class="display-4">Analisis Emosi</h1><p class="fs-5">${result.response}</p>`;
+          } else {
+            alert("Failed to post audio to the API");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+
+        recordedChunks = [];
+      };
+
+      const clearRecording = () => {
+        var transcriptionContainer = document.getElementById(
+          "transcriptionContainer"
+        );
+        var responseContainer = document.getElementById("responseContainer");
+
+        // Remove transcription div
+        var transcriptionDiv = transcriptionContainer.firstChild;
+        if (transcriptionDiv) {
+          transcriptionContainer.innerHTML = "";
+        }
+
+        // Remove response div
+        var responseDiv = responseContainer.firstChild;
+        if (responseDiv) {
+          responseContainer.innerHTML = "";
+        }
+      };
+
+      // bind button dengan listener
+      document
+        .getElementById("startRecord")
+        .addEventListener("click", startRecording);
+      document
+        .getElementById("stopRecord")
+        .addEventListener("click", stopRecording);
+      document
+        .getElementById("clearRecord")
+        .addEventListener("click", clearRecording);
+      document.getElementById("postAudio").addEventListener("click", postAudio);
+    </script>
+  </body>
+</html>

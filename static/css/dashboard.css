@@ -1,0 +1,107 @@
+.visualFAQ {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.judulFAQ {
+  background-color: #dad2b8;
+  background-size: cover; /* Ensure the image covers the entire background */
+  background-position: center; /* Center the image */
+  height: 20%;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  flex-direction: column;
+  color: #fff;
+}
+
+.judulFAQ h1 {
+  font-size: 48;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.judulFAQ p {
+  font-size: 14px;
+}
+
+.isiFAQ {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-color: #dad2b8;
+  min-height: 80%; /* Fixed minimum height */
+  border-radius: 5px;
+  overflow-y: auto; /* Allows vertical scrolling */
+}
+
+/* FAQ Toggle Buttons */
+.faq-toggle {
+  background-color: #fef5da;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 15px; /* Adds space between questions */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.faq-toggle i {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+  font-size: 16px;
+}
+
+.faq-toggle:hover {
+  background-color: #e9e4d1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+}
+
+/* FAQ Content */
+.faq-content {
+  display: none;
+  padding: 10px 0;
+  background-color: #fafafa;
+  border-radius: 0 0 5px 5px;
+  width: 100%;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+/* No extra space between question and its answer */
+.faq-toggle.active + .faq-content {
+  display: block;
+  max-height: 200px; /* Define max height for smooth opening */
+}
+
+.faq-content {
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  margin-top: -17px;
+  margin-bottom: 10px;
+}
+
+.faq-toggle.active i {
+  transform: rotate(180deg) translateY(50%); 
+}
+
+/* Ensure the FAQ content becomes scrollable if too long */
+.isiFAQ {
+  overflow-y: auto;
+}

@@ -1,0 +1,212 @@
+/* Kontainer utama */
+.modelConfig {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  gap: 10px;
+}
+
+#modelListContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  width: 97%; /* Batasi lebar agar tidak memenuhi seluruh kontainer */
+  padding: 5px;
+  gap: 10px; /* Berikan jarak 10px antara elemen-elemen di dalam .head */
+}
+
+.kolomSearch {
+  display: flex;
+  flex-grow: 1; /* Kolom search akan memenuhi ruang yang tersisa */
+}
+
+.kolomSearch input {
+  width: 100%; /* Input akan memenuhi seluruh ruang kolom search */
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.tombolCobaModel button {
+  padding: 10px 20px;
+  background-color: #577d8a;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.tombolCobaModel button:hover {
+  background-color: #466470;
+}
+
+.tombolCobaModel button i {
+  font-size: 16px;
+}
+
+.tombolTambahModel button {
+  padding: 10px 20px;
+  background-color: #eb5757;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.tombolTambahModel button:hover {
+  background-color: #c94444;
+}
+
+.tombolTambahModel button i {
+  font-size: 16px;
+}
+
+
+
+/* model list */
+.modelList {
+  display: flex;
+  align-items: center;
+  width: 97%; /* Batasi lebar agar tidak memenuhi seluruh kontainer */
+  padding: 3px;
+  border-radius: 15px;
+  gap: 10px; /* Berikan jarak 10px antara elemen-elemen di dalam .head */
+}
+
+.modelDesc {
+  display: flex;
+  flex-grow: 1; /* Kolom search akan memenuhi ruang yang tersisa */
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  background-color: #FBF1D2;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modelDesc .desc {
+  width: 65%; /* Input akan memenuhi seluruh ruang kolom search */
+  padding: 8px;
+  height: 60%;
+}
+
+.modelDesc .model-tag {
+  padding: 8px;
+  background-color: #585036;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  margin-left: 5px;
+  font-size: 12px;
+  display: inline-flex; /* Ubah ke inline-flex untuk hug content */
+  align-items: center;
+  width: auto; /* Pastikan width disetel ke auto untuk mengikuti ukuran konten */
+  height: 30px;
+}
+
+.tombolCongfig button {
+  padding: 10px 20px;
+  background-color: #E0A26F;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.tombolCongfig button:hover {
+  background-color: #466470; 
+}
+
+
+/* model header */
+.headermodel {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  width: 97%; /* Batasi lebar agar tidak memenuhi seluruh kontainer */
+  gap: 10px; /* Berikan jarak 10px antara elemen-elemen di dalam .head */
+  font-weight: bold;
+}
+
+.headermodelnya {
+  display: flex;
+  flex-grow: 1; /* Kolom search akan memenuhi ruang yang tersisa */
+  padding: 0px 8px ;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.headermodelnya .namaModel {
+  width: 65%; /* Input akan memenuhi seluruh ruang kolom search */
+  padding: 0px 8px ;
+  height: 60%;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.headermodelnya .taghead {
+  font-weight: bold;
+  padding: 0px 8px ;
+  border: none;
+  margin-left: 5px;
+  font-size: 18px;
+  display: inline-flex; /* Ubah ke inline-flex untuk hug content */
+  align-items: center;
+  width: auto; /* Pastikan width disetel ke auto untuk mengikuti ukuran konten */
+  height: 30px;
+}
+
+.actionhead {
+  font-size: 18px;
+  padding: 0px 5px;
+  border: none;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  margin-right: 60px;
+  margin-right: 55px;
+  margin-left: -5px;
+}
+
+
+
+/* Gaya untuk pesan "Model tidak ditemukan" */
+.noModelFound .modelDesc {
+  display: flex;
+  flex-grow: 1; 
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  background-color: #f8d7da; /* Warna merah muda terang */
+  color: #721c24; /* Warna teks merah gelap */
+  justify-content: center;
+  align-items: center;
+  width: auto;
+}

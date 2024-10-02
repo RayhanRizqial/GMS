@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block title %}Buat Assistant{% endblock %}
+{% block page_title %}Buat Assistant{% endblock %}
+
+{% block content %}
+    <script>
+        async function createVectorStore() {
+            // Ambil elemen-elemen input
+            const nameInput = document.getElementById("vector_store_name");
+            const filesInput = document.getElementById("vector_store_files");
+            const statusMessage = document.getElementById("status-message");
+        
+            // Validasi input
+            if (!nameInput.value || filesInput.files.length === 0) {
+                statusMessage.textContent = "Please provide a name and select at least one file.";
+                return;
+            }
+        
+            // Buat objek FormData
+            const formData = new FormData();
+            formData.append("name", nameInput.value);
+        
+            // Tambahkan file ke FormData
+            for (let i = 0; i < filesInput.files.length; i++) {
+                formData.append("files", filesInput.files[i]);
+            }
+        
+            try {
+                // Kirim data ke endpoint menggunakan fetch API
+                const response = await fetch("/create-vector-store/", {
+                    method: "POST",
+                    body: formData
+                });
+        
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+        
+                const result = await response.json();
+                statusMessage.textContent = `Vector store created successfully with ID: ${result.vector_store_id}`;
+            } catch (error) {
+                statusMessage.textContent = `Error creating vector store: ${error.message}`;
+            }
+        }
+    </script>
+    <style>
+        /* General Styling */
+/* General Styling */
+
+
+h1, h2 {
+    color: #313131;
+    text-align: center;
+    margin-top: 30px;
+}
+
+h1 {
+    font-size: 1.8rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-top: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #577D8A;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="text"], input[type="file"], textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #EDE5C8;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
+}
+
+textarea {
+    resize: vertical;
+    height: 120px;
+}
+
+button, input[type="submit"] {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #577D8A;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #E0A26F;
+    transform: translateY(-2px);
+}
+
+button:active, input[type="submit"]:active {
+    background-color: #EB5757;
+    transform: translateY(2px);
+}
+
+#upload-container, form {
+    width: 80%;
+    max-width: 650px;
+    background-color: #fef5da;
+    padding: 30px;
+    margin: 30px auto;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#status-message {
+    text-align: center;
+    margin: 20px auto;
+    font-weight: bold;
+    color: #EB5757;
+}
+
+#status-message.success {
+    color: #4CAF50;
+}
+
+input[type="file"] {
+    padding: 10px;
+    background-color: #fef5da;
+    border-radius: 6px;
+    border: 2px dashed #E0A26F;
+}
+
+input[type="submit"], button {
+    width: 100%;
+    margin-top: 15px;
+    background-color: #577D8A;
+}
+
+/* Add subtle animation */
+button, input[type="submit"] {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #E0A26F;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:active, input[type="submit"]:active {
+    background-color: #EB5757;
+    transform: translateY(1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 650px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    #upload-container, form {
+        width: 95%;
+        padding: 20px;
+    }
+
+    input[type="text"], input[type="file"], textarea {
+        padding: 10px;
+    }
+
+    button, input[type="submit"] {
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+}
+
+
+    </style>
+</head>
+<div style="margin-left: 10rem;">
+    <h1>Buat Penyimpanan Vektor</h1>
+    <div id="upload-container">
+        <label for="vector_store_name">Nama Penyimpanan Vektor:</label>
+        <input type="text" id="vector_store_name" required><br><br>
+    
+        <label for="vector_store_files">Unggah File:</label>
+        <input type="file" id="vector_store_files" multiple required><br><br>
+    
+        <button onclick="createVectorStore()">Buat Penyimpanan Vektor</button>
+    </div>
+    
+    <div id="status-message"></div>
+
+    <h1>Buat Asisten OpenAI</h1>
+    <form action="/create-assistant-aja/" method="post">
+        <label for="assistant_name">Nama Asisten:</label>
+        <input type="text" id="assistant_name" name="name" required><br><br>
+        
+        <label for="assistant_instructions">Instruksi:</label>
+        <textarea id="assistant_instructions" name="instructions" required></textarea><br><br>
+        
+        <label for="assistant_model">Model:</label>
+        <input type="text" id="assistant_model" name="model" value="gpt-3.5-turbo-0125" required><br><br>
+        
+        <label for="vector_store_id">ID Penyimpanan Vektor:</label>
+        <input type="text" id="vector_store_id" name="vector_store_id" required><br><br>
+        
+        <input type="submit" value="Buat Asisten">
+    </form>
+
+    <h1>Buat Asisten OpenAI dengan Penyimpanan Vektor</h1>
+    <form action="/create-assistant/" method="post" enctype="multipart/form-data">
+        <label for="assistant_name">Nama Asisten:</label>
+        <input type="text" id="assistant_name" name="name" required><br><br>
+        
+        <label for="assistant_instructions">Instruksi:</label>
+        <textarea id="assistant_instructions" name="instructions" required></textarea><br><br>
+        
+        <label for="assistant_model">Model:</label>
+        <input type="text" id="assistant_model" name="model" value="gpt-3.5-turbo-0125" required><br><br>
+        
+        <label for="assistant_files">Unggah File:</label>
+        <input type="file" id="assistant_files" name="files" multiple required><br><br>
+        
+        <input type="submit" value="Buat Asisten">
+    </form>
+
+    <h2>Kirim Pesan ke Asisten</h2>
+    <form action="/send-message/" method="post">
+        <label for="message_assistant_id">ID Asisten:</label>
+        <input type="text" id="message_assistant_id" name="assistant_id" required><br><br>
+        
+        <label for="message_vector_store_id">ID Penyimpanan Vektor:</label>
+        <input type="text" id="message_vector_store_id" name="vector_store_id" required><br><br>
+        
+        <label for="user_message">Pesan Anda:</label>
+        <textarea id="user_message" name="user_message" required></textarea><br><br>
+        
+        <input type="submit" value="Kirim Pesan">
+    </form>
+
+    <h2>Tambahkan File ke Penyimpanan Vektor</h2>
+    <form action="/add-file-to-vector-store/" method="post" enctype="multipart/form-data">
+        <label for="add_vector_store_id">ID Penyimpanan Vektor:</label>
+        <input type="text" id="add_vector_store_id" name="vector_store_id" required><br><br>
+        
+        <label for="add_file">Unggah File:</label>
+        <input type="file" id="add_file" name="file" required><br><br>
+        
+        <input type="submit" value="Tambahkan File">
+    </form>
+</div>
+    {% endblock %}

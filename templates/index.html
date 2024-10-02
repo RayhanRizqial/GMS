@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block title %}Tambah Fine-Tuning{% endblock %}
+{% block page_title %}Tambah Fine-Tuning{% endblock %}
+
+{% block content %}
+    <script>
+      async function uploadFile() {
+        const fileInput = document.getElementById("file-upload");
+        const file = fileInput.files[0];
+        if (!file) {
+          alert("Please select a file first");
+          return;
+        }
+
+        let formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const uploadResponse = await fetch("/upload-file/", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!uploadResponse.ok) {
+            throw new Error(`HTTP error! status: ${uploadResponse.status}`);
+          }
+
+          const result = await uploadResponse.json();
+          document.getElementById("file-upload-result").innerText =
+            result.message || "File uploaded successfully";
+
+          if (result.file_id) {
+            document.getElementById("file-id").value = result.file_id;
+            document.getElementById("start-fine-tune-btn").disabled = false;
+          }
+        } catch (error) {
+          document.getElementById(
+            "file-upload-result"
+          ).innerText = `Error uploading file: ${error.message}`;
+        }
+      }
+
+      async function startFineTune() {
+        const fileId = document.getElementById("file-id").value;
+        const modelName = document.getElementById("model-name").value;
+        if (!fileId) {
+          alert("Please upload a file first");
+          return;
+        }
+        if (!modelName) {
+          alert("Please enter a custom model name");
+          return;
+        }
+
+        try {
+          const fineTuneResponse = await fetch("/create-fine-tuning-job/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              training_file: fileId,
+              model: "gpt-3.5-turbo-0125",
+              suffix: modelName, // Add this line
+            }),
+          });
+
+          if (!fineTuneResponse.ok) {
+            const errorData = await fineTuneResponse.json();
+            throw new Error(
+              `HTTP error! status: ${
+                fineTuneResponse.status
+              }, message: ${JSON.stringify(errorData)}`
+            );
+          }
+
+          const result = await fineTuneResponse.json();
+          document.getElementById(
+            "fine-tune-result"
+          ).innerText = `Fine-tuning started with Job ID: ${result.job_id}`;
+          document.getElementById("job-id").value = result.job_id;
+          document.getElementById("check-status-btn").disabled = false;
+        } catch (error) {
+          document.getElementById(
+            "fine-tune-result"
+          ).innerText = `Error starting fine-tuning: ${error.message}`;
+        }
+      }
+
+      async function checkJobStatus() {
+        const jobId = document.getElementById("job-id").value;
+        if (!jobId) {
+          alert("No fine-tuning job has been started yet");
+          return;
+        }
+
+        try {
+          const statusResponse = await fetch(`/fine-tuning-job/${jobId}`, {
+            method: "GET",
+          });
+
+          if (!statusResponse.ok) {
+            throw new Error(`HTTP error! status: ${statusResponse.status}`);
+          }
+
+          const result = await statusResponse.json();
+          document.getElementById("job-status").innerText = `Job Status: ${
+            result.status
+          }\nFine-tuned Model: ${
+            result.fine_tuned_model || "Not available yet"
+          }`;
+        } catch (error) {
+          document.getElementById(
+            "job-status"
+          ).innerText = `Error checking job status: ${error.message}`;
+        }
+      }
+
+      async function listFineTuningJobs() {
+        try {
+          const response = await fetch("/list-fine-tuning-jobs", {
+            method: "GET",
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const result = await response.json();
+          let jobsList = "Fine-tuning Jobs:\n";
+          result.jobs.forEach((job) => {
+            jobsList += `ID: ${job.id}, Status: ${job.status}, Model: ${
+              job.model
+            }, Output Model: ${job.output_model || "N/A"}\n`;
+          });
+          document.getElementById("jobs-list").innerText = jobsList;
+        } catch (error) {
+          document.getElementById(
+            "jobs-list"
+          ).innerText = `Error fetching fine-tuning jobs: ${error.message}`;
+        }
+      }
+    </script>
+    <style>
+      h1 {
+        color: #577D8A;
+        margin-top: 30px;
+        font-size: 2.5rem;
+      }
+    
+      h2 {
+        color: #313131;
+        margin-top: 20px;
+        font-size: 1.8rem;
+      }
+    
+      input[type="file"], input[type="text"] {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%; /* Adjust to fill container */
+        border: 2px solid #EDE5C8;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: #fff;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+      }
+    
+      input[type="file"]:focus, input[type="text"]:focus {
+        border-color: #E0A26F;
+        outline: none;
+      }
+    
+      button {
+        padding: 12px 20px;
+        background-color: #577D8A;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 10px;
+        width: 100%; /* Make buttons full width */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+    
+      button:hover {
+        background-color: #E0A26F;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    
+      button:active {
+        background-color: #EB5757;
+      }
+    
+      p {
+        font-size: 1rem;
+        color: #EB5757;
+      }
+    
+      #file-upload-result, #fine-tune-result, #job-status, #jobs-list {
+        background-color: #fef5da;
+        padding: 10px;
+        border-radius: 6px;
+        margin: 10px 0;
+      }
+    
+      pre {
+        background-color: #fef5da;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 1rem;
+        white-space: pre-wrap;
+        margin: 20px 0;
+      }
+    
+      input[type="hidden"] {
+        display: none;
+      }
+    
+      .containers {
+        background-color: #fef5da;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+        max-width: 100%;
+        margin: 20px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: fit-content;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="containers">
+      <h1>Fine-Tuning Interface</h1>
+
+      <h2>Upload Training File</h2>
+      <input type="file" id="file-upload" />
+      <button onclick="uploadFile()">Upload File</button>
+      <p id="file-upload-result"></p>
+
+      <h2>Start Fine-Tuning</h2>
+      <input type="hidden" id="file-id" />
+      <input type="text" id="model-name" placeholder="Enter custom model name" />
+      <button id="start-fine-tune-btn" onclick="startFineTune()" disabled>
+        Start Fine-Tuning
+      </button>
+      <p id="fine-tune-result"></p>
+
+      <h2>Check Job Status</h2>
+      <input type="hidden" id="job-id" />
+      <button id="check-status-btn" onclick="checkJobStatus()">Check Status</button>
+      <p id="job-status"></p>
+
+      <h2>List Fine-Tuning Jobs</h2>
+      <button onclick="listFineTuningJobs()">List Fine-Tuning Jobs</button>
+      <pre id="jobs-list"></pre>
+    </div>
+  </body>
+{% endblock %}
