@@ -31,9 +31,9 @@ import uuid
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-client = OpenAI(api_key="")
+client = OpenAI(api_key="sk-")
 
-# openai.api_key = ""
+# openai.api_key = "sk-"
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
