@@ -1,11 +1,11 @@
 # Gunakan base image Python
-FROM python:3.10-slim
+FROM python:latest
 
 # Set directory kerja di dalam container
 WORKDIR /app
 
 # Salin file requirements.txt dan install dependencies
-COPY requirements.txt .
+COPY ./requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
