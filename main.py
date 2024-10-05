@@ -6,7 +6,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from openai import OpenAI
 from pydantic import BaseModel
 from fastapi import Query
 from sqlalchemy.orm import Session
@@ -18,7 +17,7 @@ import time
 import io
 from datetime import datetime
 from io import BytesIO
-from openai import OpenAI, AssistantEventHandler
+from openai import OpenAI
 from typing_extensions import override
 import json
 import os

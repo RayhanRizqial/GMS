@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD:             # Ganti dengan password root MySQL
+      MYSQL_DATABASE: bigproject       # Nama database
+      MYSQL_USER: root                 # Username untuk MySQL
+      MYSQL_PASSWORD:                  # Password untuk user
+    ports:
+      - "3307:3307"
+    volumes:
+      - mysql-data:/var/lib/mysql        # Menyimpan data MySQL agar persisten
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"                      # Port untuk FastAPI
+    volumes:
+      - .:/app
+    depends_on:
+      - db                               # Web service menunggu database siap
+    environment:
+      DATABASE_URL: "mysql+pymysql://root:@localhost:3307/bigproject" # Connection string ke MySQL
+
+volumes:
+  mysql-data:
