@@ -8,9 +8,8 @@ services:
       MYSQL_ROOT_PASSWORD: mypassword      # Password untuk root MySQL
       MYSQL_DATABASE: bigproject            # Nama database
       MYSQL_USER: gms                      # Username untuk MySQL
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes       # Biarkan kosong jika tidak ingin menggunakan password
     ports:
-      - "3307:3307"
+      - "3307:3307"                        # Port untuk MySQL
     volumes:
       - mysql-data:/var/lib/mysql          # Menyimpan data MySQL agar persisten
 
@@ -18,13 +17,13 @@ services:
     build: .
     ports:
       - "8000:8000"                        # Port untuk FastAPI
-    volumes:
-      - .:/app
     depends_on:
       - db                                 # Web service menunggu database siap
     environment:
-      DATABASE_URL: "mysql+pymysql://gms@db:3307/bigproject" # Connection string ke MySQL
-
+      DATABASE_URL: "mysql+pymysql://gms:password@db:3307/bigproject" # Connection string ke MySQL
+    # Jika ingin menggunakan delay, uncomment baris berikut
+    # command: ["sh", "-c", "sleep 10 && uvicorn main:app --host 0.0.0.0 --port 8000"]
+  
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
