@@ -23,7 +23,7 @@ services:
     depends_on:
       - db                                 # Web service menunggu database siap
     environment:
-      DATABASE_URL: "mysql+pymysql://gms:@db:2306/bigproject" # Connection string ke MySQL
+      DATABASE_URL: "mysql+pymysql://gms@db:2306/bigproject" # Connection string ke MySQL
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
