@@ -10,7 +10,7 @@ services:
       MYSQL_USER: gms                      # Username untuk MySQL
       MYSQL_ALLOW_EMPTY_PASSWORD: yes       # Biarkan kosong jika tidak ingin menggunakan password
     ports:
-      - "3307:3306"
+      - "2307:2306"
     volumes:
       - mysql-data:/var/lib/mysql          # Menyimpan data MySQL agar persisten
 
@@ -23,7 +23,7 @@ services:
     depends_on:
       - db                                 # Web service menunggu database siap
     environment:
-      DATABASE_URL: "mysql+pymysql://root:mypassword@db:3306/bigproject" # Connection string ke MySQL
+      DATABASE_URL: "mysql+pymysql://root:mypassword@db:2306/bigproject" # Connection string ke MySQL
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -32,7 +32,7 @@ services:
       - "8080:80"                          # Akses phpMyAdmin di http://localhost:8080
     environment:
       PMA_HOST: db                         # Host database MySQL
-      PMA_PORT: 3306                       # Port database MySQL
+      PMA_PORT: 2306                       # Port database MySQL
 
 volumes:
   mysql-data:
