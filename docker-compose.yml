@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mypassword      # Password untuk root MySQL
       MYSQL_DATABASE: bigproject            # Nama database
-      MYSQL_USER: root                      # Username untuk MySQL
+      MYSQL_USER: gms                      # Username untuk MySQL
       MYSQL_ALLOW_EMPTY_PASSWORD: yes       # Biarkan kosong jika tidak ingin menggunakan password
     ports:
       - "3307:3306"
