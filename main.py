@@ -25,16 +25,16 @@ import logging
 import uuid
 from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 # Library Baru:
 #line 15, 26
 
-openAI_API = os.getenv('OPENAI_API_KEY')
+# openAI_API = os.getenv('OPENAI_API_KEY')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-client = OpenAI(api_key=openAI_API)
+client = OpenAI(api_key="sk-")
 
 # openai.api_key = "sk-"
 app = FastAPI()

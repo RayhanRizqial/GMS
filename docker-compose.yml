@@ -12,8 +12,6 @@ services:
       - "3307:3307"                        # Port untuk MySQL
     volumes:
       - mysql-data:/var/lib/mysql          # Menyimpan data MySQL agar persisten
-    env_file:
-      - .env          # Menyimpan data MySQL agar persisten
     
 
   web:
