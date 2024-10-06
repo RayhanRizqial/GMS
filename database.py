@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 # Configure the MySQL database connection (using PyMySQL as driver)
-DATABASE_URL = "mysql+pymysql://gms@db:3307/bigproject"
+DATABASE_URL = "mysql+pymysql://gms:Z9=EF);Zj7T)Y>h@db:3307/bigproject"
 
 # Create the engine
 engine = create_engine(DATABASE_URL, echo=True)  # echo=True for SQL logging
