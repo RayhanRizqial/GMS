@@ -8,7 +8,6 @@ services:
       MYSQL_ROOT_PASSWORD: mypassword      # Password untuk root MySQL
       MYSQL_DATABASE: bigproject            # Nama database
       MYSQL_USER: gms                      # Username untuk MySQL
-      MYSQL_PASSWORD: password
     ports:
       - "3307:3306"                        # Port untuk MySQL
     volumes:
@@ -22,7 +21,7 @@ services:
     depends_on:
       - db                                 # Web service menunggu database siap
     environment:
-      DATABASE_URL: "mysql+pymysql://gms:password@db:3306/bigproject" # Connection string ke MySQL
+      DATABASE_URL: "mysql+pymysql://gms@db:3306/bigproject" # Connection string ke MySQL
       OPENAI_API_KEY: "sk-"
 
     # Jika ingin menggunakan delay, uncomment baris berikut
