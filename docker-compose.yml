@@ -5,46 +5,39 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mypassword
-      MYSQL_DATABASE: bigproject
-      MYSQL_USER: gms
+      MYSQL_ROOT_PASSWORD: mypassword      # Password untuk root MySQL
+      MYSQL_DATABASE: bigproject            # Nama database
+      MYSQL_USER: gms                      # Username untuk MySQL
       MYSQL_PASSWORD: password
     ports:
-      - "3307:3306"
+      - "3307:3307"                        # Port untuk MySQL
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql          # Menyimpan data MySQL agar persisten
     networks:
       - backend
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
 
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "8000:8000"                        # Port untuk FastAPI
     depends_on:
-      db:
-        condition: service_healthy
+      - db                                 # Web service menunggu database siap
     environment:
-      DATABASE_URL: "mysql+pymysql://gms:password@db:3306/bigproject"
+      DATABASE_URL: "mysql+pymysql://gms:password@db:3307/bigproject" # Connection string ke MySQL
       OPENAI_API_KEY: "sk-"
     networks:
       - backend
-
+  
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "8080:80"
+      - "8080:80"                          # Akses phpMyAdmin di http://localhost:8080
     environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
+      PMA_HOST: db                         # Host database MySQL
+      PMA_PORT: 3307                       # Port database MySQL
     networks:
       - backend
-    depends_on:
-      - db
 
 volumes:
   mysql-data:
