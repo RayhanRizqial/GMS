@@ -5,8 +5,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mypassword  # Password untuk root user
-      MYSQL_DATABASE: bigproject       # Nama database tetap sama
+      MYSQL_ROOT_PASSWORD: mypassword      # Password untuk root MySQL
+      MYSQL_DATABASE: bigproject            # Nama database
+      MYSQL_USER: gms                      # Username untuk MySQL
+      MYSQL_PASSWORD: password
     ports:
       - "3307:3307"                        # Port untuk MySQL
     volumes:
@@ -20,7 +22,7 @@ services:
     depends_on:
       - db                                 # Web service menunggu database siap
     environment:
-      DATABASE_URL: "mysql+pymysql://root:mypassword@db:3307/bigproject" # Connection string ke MySQL
+      DATABASE_URL: "mysql+pymysql://gms:password@db:3307/bigproject" # Connection string ke MySQL
       OPENAI_API_KEY: "sk-"
 
     # Jika ingin menggunakan delay, uncomment baris berikut
