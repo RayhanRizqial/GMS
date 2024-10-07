@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 8000
 
 # Jalankan aplikasi FastAPI menggunakan uvicorn
-CMD ["db", "uvicorn", "main:app"]
+CMD ["uvicorn", "main:app"]
