@@ -10,7 +10,7 @@ services:
       MYSQL_USER: gms                      # Username untuk MySQL
       MYSQL_PASSWORD: password
     ports:
-      - "3306:3306"                        # Port untuk MySQL
+      - "3307:3306"                        # Port untuk MySQL
     volumes:
       - mysql-data:/var/lib/mysql          # Menyimpan data MySQL agar persisten
     
